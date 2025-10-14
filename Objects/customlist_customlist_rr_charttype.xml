@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<customList scriptid="customlist_rr_charttype">
+    <name>Report Runner Chart Types</name>
+    <isinactive>F</isinactive>
+    <customValue scriptid="custvalue_rr_chart_none">
+        <value>None</value>
+        <abbreviation>none</abbreviation>
+        <isinactive>F</isinactive>
+        <valueid>1</valueid>
+    </customValue>
+    <customValue scriptid="custvalue_rr_chart_bar">
+        <value>Bar</value>
+        <abbreviation>bar</abbreviation>
+        <isinactive>F</isinactive>
+        <valueid>2</valueid>
+    </customValue>
+    <customValue scriptid="custvalue_rr_chart_line">
+        <value>Line</value>
+        <abbreviation>line</abbreviation>
+        <isinactive>F</isinactive>
+        <valueid>3</valueid>
+    </customValue>
+    <customValue scriptid="custvalue_rr_chart_pie">
+        <value>Pie</value>
+        <abbreviation>pie</abbreviation>
+        <isinactive>F</isinactive>
+        <valueid>4</valueid>
+    </customValue>
+    <customValue scriptid="custvalue_rr_chart_doughnut">
+        <value>Doughnut</value>
+        <abbreviation>doughnut</abbreviation>
+        <isinactive>F</isinactive>
+        <valueid>5</valueid>
+    </customValue>
+</customList>
