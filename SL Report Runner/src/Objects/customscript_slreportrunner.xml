@@ -113,5 +113,21 @@
         </link>
       </links>
     </scriptdeployment>
+    <scriptdeployment scriptid="customdeploy_slrr_displayreport">
+      <allemployees>F</allemployees>
+      <allpartners>F</allpartners>
+      <allroles>T</allroles>
+      <audslctrole></audslctrole>
+      <custscript_slrr_favoritereports></custscript_slrr_favoritereports>
+      <custscript_slrr_label></custscript_slrr_label>
+      <custscript_slrr_shownavbar>F</custscript_slrr_shownavbar>
+      <eventtype></eventtype>
+      <isdeployed>T</isdeployed>
+      <isonline>F</isonline>
+      <loglevel>ERROR</loglevel>
+      <runasrole></runasrole>
+      <status>RELEASED</status>
+      <title>SL Report Runner - Display Report</title>
+    </scriptdeployment>
   </scriptdeployments>
 </suitelet>
