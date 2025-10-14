@@ -3,16 +3,18 @@
   "version": "0.1.0",
   "private": true,
   "description": "SuiteCloud Report Runner project configured with StandardJS linting",
-  "scripts": {
-    "lint": "standard \"src/FileCabinet/SuiteScripts/**/*.js\"",
-    "lint:fix": "standard \"src/FileCabinet/SuiteScripts/**/*.js\" --fix"
-  },
   "devDependencies": {
     "standard": "^17.1.0"
   },
   "standard": {
-    "globals": [
-      "define"
+    "globals": {
+      "define": "readonly",
+      "require": "readonly",
+      "runtime": "readonly",
+      "config": "readonly"
+    },
+    "envs": [
+      "es2021"
     ],
     "ignore": [
       "src/FileCabinet/SuiteScripts/*/libs/**/*.js"

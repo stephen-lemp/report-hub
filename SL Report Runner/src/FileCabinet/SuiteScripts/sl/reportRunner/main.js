@@ -4,11 +4,21 @@
  * @author Stephen Lemp <sl@stephenlemp.com>
  * @description Main entry point for the Report Runner Suitelet
  */
-define(['N/ui/serverWidget', 'N/search'], (serverWidget, search) => {
+define(['N/ui/serverWidget', 'N/search', 'N/config'], function (serverWidget, search, config) {
 
   function onRequest(context) {
     try {
-      generateMainPage(context);
+      if (context.request.method === 'POST') {
+        log.debug({ title: 'POST Request', details: context.request });
+        const action = context.request.parameters.action;
+        if (action === 'updateFavorites') {
+          context.response.write(JSON.stringify({ success: handleUpdateFavorites(context) }));
+        } else {
+          context.response.write(JSON.stringify({ success: false, message: 'Unknown action' }));
+        }
+      } else {
+        generateMainPage(context);
+      }
     } catch (e) {
       log.error({ title: 'Error in Report Runner Suitelet', details: e });
       context.response.write('An error occurred: ' + e.message);
@@ -46,6 +56,21 @@ define(['N/ui/serverWidget', 'N/search'], (serverWidget, search) => {
     });
     form.clientScriptModulePath = 'SuiteScripts/sl/reportRunner/client.js';
     context.response.writePage(form);
+  }
+
+  function handleUpdateFavorites(context) {
+    const body = JSON.parse(context.request.body);
+    const favoriteReportIds = body.favoriteReportIds || '';
+    // Here you would typically save the favoriteReportIds to a user preference or custom record
+    // For this example, we'll just log them
+    log.debug({ title: 'Updated Favorite Reports', details: favoriteReportIds });
+    const userPreferences = config.load({ type: config.Type.USER_PREFERENCES });
+    userPreferences.setValue({
+      fieldId: 'custscript_slrr_favoritereports',
+      value: favoriteReportIds
+    });
+    userPreferences.save();
+    return true;
   }
 
 
