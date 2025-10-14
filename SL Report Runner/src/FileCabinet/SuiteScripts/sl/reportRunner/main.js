@@ -19,13 +19,11 @@ define(['N/ui/serverWidget', 'N/search'], (serverWidget, search) => {
     const form = serverWidget.createForm({ title: 'Report Runner' });
 
     // Add a field for favorites
-    const favoritesField = form.addField({
+    form.addField({
       id: 'custpage_favoriatereports',
       type: serverWidget.FieldType.INLINEHTML,
       label: 'Favorites'
     });
-    const favoriteReports = getFavoriteReports();
-    favoritesField.defaultValue = renderFavoritesHtml(favoriteReports);
 
     // Add a select field to display available reports
     const reportsListField = form.addField({
@@ -43,7 +41,7 @@ define(['N/ui/serverWidget', 'N/search'], (serverWidget, search) => {
     });
     form.addButton({
       id: 'custpage_slrr_addfavorite',
-      label: 'Run Report',
+      label: 'Add Favorite',
       functionName: 'addFavorite'
     });
     form.clientScriptModulePath = 'SuiteScripts/sl/reportRunner/client.js';
