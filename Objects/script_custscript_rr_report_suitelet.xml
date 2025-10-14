@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<script scriptid="custscript_rr_report_suitelet">
+    <name>Report Runner Suitelet</name>
+    <description>Entry point for configurable reporting Suitelet.</description>
+    <scripttype>SUITELET</scripttype>
+    <status>RELEASED</status>
+    <notifyowneronupdates>F</notifyowneronupdates>
+    <scriptfile>SuiteScripts/ReportRunner/report_suitelet.js</scriptfile>
+    <libraries />
+</script>

@@ -1,0 +1,31 @@
+[
+  {
+    "id": "trandate_from",
+    "label": "Start Date",
+    "type": "date",
+    "operator": "ONORAFTER",
+    "searchField": "trandate",
+    "suiteqlParamIndex": 0
+  },
+  {
+    "id": "trandate_to",
+    "label": "End Date",
+    "type": "date",
+    "operator": "ONORBEFORE",
+    "searchField": "trandate",
+    "suiteqlParamIndex": 1
+  },
+  {
+    "id": "status",
+    "label": "Status",
+    "type": "select",
+    "operator": "ANYOF",
+    "searchField": "status",
+    "source": [
+      { "value": "SalesOrd:A", "text": "Pending Approval" },
+      { "value": "SalesOrd:B", "text": "Pending Fulfillment" },
+      { "value": "SalesOrd:D", "text": "Pending Billing" }
+    ],
+    "suiteqlParamIndex": 2
+  }
+]

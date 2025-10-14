@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deploy>
+    <configuration>
+        <recordtypes>
+            <recordtype>customrecord_rr_report</recordtype>
+        </recordtypes>
+        <customlists>
+            <customlist>customlist_rr_datasource</customlist>
+            <customlist>customlist_rr_charttype</customlist>
+        </customlists>
+        <scripts>
+            <script>custscript_rr_report_suitelet</script>
+        </scripts>
+    </configuration>
+</deploy>

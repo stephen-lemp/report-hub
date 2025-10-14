@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<customList scriptid="customlist_rr_datasource">
+    <name>Report Runner Data Sources</name>
+    <isinactive>F</isinactive>
+    <customValue scriptid="custvalue_rr_ds_savedsearch">
+        <value>Saved Search</value>
+        <abbreviation>SAVED_SEARCH</abbreviation>
+        <isinactive>F</isinactive>
+        <valueid>1</valueid>
+    </customValue>
+    <customValue scriptid="custvalue_rr_ds_suiteql">
+        <value>SuiteQL</value>
+        <abbreviation>SUITEQL</abbreviation>
+        <isinactive>F</isinactive>
+        <valueid>2</valueid>
+    </customValue>
+</customList>
