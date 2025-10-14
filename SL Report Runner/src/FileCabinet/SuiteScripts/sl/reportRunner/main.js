@@ -35,10 +35,9 @@ define(['N/ui/serverWidget', 'N/record', 'N/search', 'N/file', 'N/log', 'N/redir
 
       // Add a select field to display available reports
       const reportsListField = form.addField({
-        id: 'custpage_report_name',
+        id: 'custpage_reportselect',
         type: serverWidget.FieldType.SELECT,
         label: 'Report Name',
-        source: 'customrecord_sl_reportrunnerconfig'
       });
       reportsListField.addSelectOption({ value: '', text: '' });
       findAndSetAvailableReports(reportsListField);
@@ -48,6 +47,12 @@ define(['N/ui/serverWidget', 'N/record', 'N/search', 'N/file', 'N/log', 'N/redir
         label: 'Run Report',
         functionName: 'runReport'
       });
+      form.addButton({
+        id: 'custpage_slrr_addfavorite',
+        label: 'Run Report',
+        functionName: 'addFavorite'
+      });
+      form.clientScriptModulePath = 'SuiteScripts/sl/reportRunner/client.js';
       return form;
     }
 
