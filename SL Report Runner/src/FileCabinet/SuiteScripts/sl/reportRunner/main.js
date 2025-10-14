@@ -4,7 +4,7 @@
  * @author Stephen Lemp <sl@stephenlemp.com>
  * @description Main entry point for the Report Runner Suitelet
  */
-define(['N/ui/serverWidget', 'N/search', 'N/config'], function (serverWidget, search, config) {
+define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/runtime'], function (serverWidget, search, config, file, runtime) {
 
   function onRequest(context) {
     try {
@@ -17,7 +17,9 @@ define(['N/ui/serverWidget', 'N/search', 'N/config'], function (serverWidget, se
           context.response.write(JSON.stringify({ success: false, message: 'Unknown action' }));
         }
       } else {
-        generateMainPage(context);
+        const reportId = context.request.parameters.reportId;
+        if (reportId) { generateReportDisplay(context, reportId); }
+        else { generateMainPage(context); }
       }
     } catch (e) {
       log.error({ title: 'Error in Report Runner Suitelet', details: e });
@@ -55,6 +57,44 @@ define(['N/ui/serverWidget', 'N/search', 'N/config'], function (serverWidget, se
       functionName: 'addFavorite'
     });
     form.clientScriptModulePath = 'SuiteScripts/sl/reportRunner/client.js';
+    context.response.writePage(form);
+  }
+
+
+  function generateReportDisplay(context, reportId) {
+    const form = serverWidget.createForm({ title: 'Report Output', hideNavBar: true });
+    // add html with reference script/css links
+    const style = `<style>${file.load({ id: '/SuiteScripts/sl/reportRunner/display/index.css' }).getContents()}</style>`;
+    const script = `<script>${file.load({ id: '/SuiteScripts/sl/reportRunner/display/index.js' }).getContents()}</script>`;
+    const body = `<body>${file.load({ id: '/SuiteScripts/sl/reportRunner/display/index.html' }).getContents()}</body>`;
+
+    form.addField({
+      id: 'custpage_reportoutput',
+      type: serverWidget.FieldType.INLINEHTML,
+      label: 'Report Output'
+    }).defaultValue = `${style}${script}${body}`;
+
+    form.addField({
+      id: 'custpage_reportid',
+      type: serverWidget.FieldType.TEXT,
+      label: 'Report ID'
+    })
+      .updateDisplayType({ displayType: serverWidget.FieldDisplayType.HIDDEN })
+      .defaultValue = reportId;
+
+    const tabulatorOptions = search.lookupFields({
+      type: 'customrecord_sl_reportrunnerconfig',
+      id: reportId,
+      columns: ['custrecord_slrr_tabulatoroptions']
+    }).custrecord_slrr_tabulatoroptions || '{}';
+    form.addField({
+      id: 'custpage_tabulatoroptions',
+      type: serverWidget.FieldType.LONGTEXT,
+      label: 'Tabulator Options'
+    })
+      .updateDisplayType({ displayType: serverWidget.FieldDisplayType.HIDDEN })
+      .defaultValue = tabulatorOptions;
+
     context.response.writePage(form);
   }
 

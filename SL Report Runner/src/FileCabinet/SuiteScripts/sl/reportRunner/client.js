@@ -95,7 +95,10 @@ define(['N/currentRecord', 'N/runtime', 'N/search'], (currentRecord, runtime, se
 
   function runReport() {
     console.log('running report', currentRecord.get().getValue({ fieldId: 'custpage_reportselect' }));
+    window.open(`/app/site/hosting/scriptlet.nl?script=customscript_slreportrunner&deploy=customdeploy_slrr_displayreport&reportId=${currentRecord.get().getValue({ fieldId: 'custpage_reportselect' })}`, '_blank');
+    return true;
   }
+
 
   function addFavorite() {
     FavoritesManager.addFavorite();
