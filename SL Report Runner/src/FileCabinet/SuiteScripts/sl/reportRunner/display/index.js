@@ -13,7 +13,17 @@ function setupDocumentReady() {
   const reportId = cr.getValue('custpage_reportid');
   console.log('reportId', reportId);
 
-  const table = new Tabulator("#results-table", JSON.parse(cr.getValue('custpage_tabulatoroptions') || '{}')
+  new Tabulator(
+    "#results-table",
+    {
+      //...JSON.parse(cr.getValue('custpage_tabulatoroptions') || '{}'),
+      autoColumns: "full",
+      paginationCounter: 'rows', //add pagination row counter
+      dataLoader: true, // Show loader while fetching data
+      ajaxURL: `${location.href}&action=GET_REPORT_DATA&reportId=${reportId}`,
+      ajaxConfig: 'POST',
+
+    }
   );
 }
 

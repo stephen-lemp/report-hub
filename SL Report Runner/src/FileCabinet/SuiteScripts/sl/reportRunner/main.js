@@ -4,7 +4,7 @@
  * @author Stephen Lemp <sl@stephenlemp.com>
  * @description Main entry point for the Report Runner Suitelet
  */
-define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/runtime'], function (serverWidget, search, config, file, runtime) {
+define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query'], function (serverWidget, search, config, file, query) {
 
   function onRequest(context) {
     try {
@@ -13,11 +13,18 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/runtime'], fun
         const action = context.request.parameters.action;
         if (action === 'updateFavorites') {
           context.response.write(JSON.stringify({ success: handleUpdateFavorites(context) }));
+        } else if (action === 'GET_REPORT_DATA') {
+          const reportId = context.request.parameters.reportId;
+          log.debug({ title: 'Generating Report Data', details: `Report ID: ${reportId}` });
+
+          context.response.setHeader({ name: 'Content-Type', value: 'application/json' });
+          context.response.write(JSON.stringify(getReportData(reportId)));
         } else {
           context.response.write(JSON.stringify({ success: false, message: 'Unknown action' }));
         }
       } else {
         const reportId = context.request.parameters.reportId;
+        log.debug({ title: 'GET Request', details: context.request });
         if (reportId) { generateReportDisplay(context, reportId); }
         else { generateMainPage(context); }
       }
@@ -26,6 +33,19 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/runtime'], fun
       context.response.write('An error occurred: ' + e.message);
     }
   }
+
+
+  function getReportData(reportId) {
+
+    const reportOptions = search.lookupFields({
+      type: 'customrecord_sl_reportrunnerconfig',
+      id: reportId,
+      columns: ['custrecord_slrr_suiteqlquery', 'custrecord_slrr_savedsearch']
+    });
+    // TODO: Add support for saved search reports
+    return query.runSuiteQL({ query: reportOptions.custrecord_slrr_suiteqlquery }).asMappedResults();
+  }
+
 
   function generateMainPage(context) {
     const form = serverWidget.createForm({ title: 'Report Runner' });
@@ -62,7 +82,14 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/runtime'], fun
 
 
   function generateReportDisplay(context, reportId) {
-    const form = serverWidget.createForm({ title: 'Report Output', hideNavBar: true });
+
+    const reportOptions = search.lookupFields({
+      type: 'customrecord_sl_reportrunnerconfig',
+      id: reportId,
+      columns: ['custrecord_slrr_tabulatoroptions', 'name']
+    });
+
+    const form = serverWidget.createForm({ title: reportOptions.name, hideNavBar: true });
     // add html with reference script/css links
     const style = `<style>${file.load({ id: '/SuiteScripts/sl/reportRunner/display/index.css' }).getContents()}</style>`;
     const script = `<script>${file.load({ id: '/SuiteScripts/sl/reportRunner/display/index.js' }).getContents()}</script>`;
@@ -82,21 +109,17 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/runtime'], fun
       .updateDisplayType({ displayType: serverWidget.FieldDisplayType.HIDDEN })
       .defaultValue = reportId;
 
-    const tabulatorOptions = search.lookupFields({
-      type: 'customrecord_sl_reportrunnerconfig',
-      id: reportId,
-      columns: ['custrecord_slrr_tabulatoroptions']
-    }).custrecord_slrr_tabulatoroptions || '{}';
     form.addField({
       id: 'custpage_tabulatoroptions',
       type: serverWidget.FieldType.LONGTEXT,
       label: 'Tabulator Options'
     })
       .updateDisplayType({ displayType: serverWidget.FieldDisplayType.HIDDEN })
-      .defaultValue = tabulatorOptions;
+      .defaultValue = reportOptions.custrecord_slrr_tabulatoroptions || '{}';
 
     context.response.writePage(form);
   }
+
 
   function handleUpdateFavorites(context) {
     const body = JSON.parse(context.request.body);
@@ -133,6 +156,7 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/runtime'], fun
       return true; // continue iteration
     });
   }
+
 
   return { onRequest };
 });
