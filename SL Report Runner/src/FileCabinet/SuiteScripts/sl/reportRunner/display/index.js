@@ -46,7 +46,6 @@ const CustomHeaderFilters = {
       }
 
       end = start.cloneNode();
-      end.setAttribute("placeholder", "Max");
 
       start.addEventListener("change", buildValues);
       start.addEventListener("blur", buildValues);
@@ -94,14 +93,17 @@ async function setupDocumentReady() {
   console.log('reportId', currentReportId);
 
   resultsTable = new Tabulator(
-    '#results-table',
+    `#results-table`,
     {
+      pagination: true,
+      paginationSize: 25,
+      paginationSizeSelector: [10, 25, 50, 100, true],
+      headerFilterLiveFilterDelay: 600, //wait 600ms from last keystroke before triggering filter
       autoColumns: 'full',
       paginationCounter: 'rows', //add pagination row counter
       dataLoader: true, // Show loader while fetching data
       ajaxURL: `${location.href}&action=GET_REPORT_DATA&reportId=${currentReportId}`,
       ajaxConfig: 'POST'
-
     }
   );
 
@@ -179,7 +181,11 @@ function initializeDownloadButton() {
     if (!resultsTable) {
       return;
     }
-    const filename = currentReportId ? `report-${currentReportId}.csv` : 'report.csv';
+    const filename = currentReportId ? `${document.title}-${new Date()
+      .toLocaleString()
+      .replaceAll(',', '')
+      .replaceAll('/', '_')
+      .replaceAll(':', '_')}.csv` : 'report.csv';
     resultsTable.download('csv', filename);
   });
 }
