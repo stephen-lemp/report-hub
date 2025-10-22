@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<manifest projecttype="SDF" appid="com.example.reportrunner" scriptid="customdeploy_rr_report_suitelet">
-    <projecttitle>Report Runner</projecttitle>
-    <projectdescription>Configurable Suitelet-driven reporting utility with SuiteQL/Saved Search data sources and charting support.</projectdescription>
-    <publisher>Report Runner</publisher>
-    <targetversion>2023.2</targetversion>
-</manifest>

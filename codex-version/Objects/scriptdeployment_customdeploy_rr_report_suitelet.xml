@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scriptDeployment scriptid="customdeploy_rr_report_suitelet">
-    <script>custscript_rr_report_suitelet</script>
-    <title>Report Runner Suitelet</title>
-    <status>RELEASED</status>
-    <isdeployed>T</isdeployed>
-    <loglevel>DEBUG</loglevel>
-    <url>customscript_rr_report_suitelet</url>
-</scriptDeployment>
