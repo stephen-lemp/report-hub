@@ -4,7 +4,8 @@
  * @author Stephen Lemp <sl@stephenlemp.com>
  * @description Main entry point for the Report Runner Suitelet
  */
-define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query'], function (serverWidget, search, config, file, query) {
+define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/task', 'N/runtime'], function (serverWidget, search, config, file, query, task, runtime) {
+
 
   function onRequest(context) {
     try {
@@ -17,7 +18,7 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query'], funct
           const reportId = context.request.parameters.reportId;
           log.debug({ title: 'Generating Report Data', details: `Report ID: ${reportId}` });
           context.response.setHeader({ name: 'Content-Type', value: 'application/json' });
-          context.response.write(JSON.stringify(getReportData(reportId)));
+          context.response.write(JSON.stringify(getReportData(context.request.parameters)));
         } else if (action === 'GET_REPORT_COLUMNS') {
           const reportId = context.request.parameters.reportId;
           context.response.setHeader({ name: 'Content-Type', value: 'application/json' });
@@ -61,15 +62,65 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query'], funct
     return JSON.stringify(results);
   }
 
-  function getReportData(reportId) {
+  function getReportData(options) {
+    const { reportId, requestGuid, taskId } = options;
+    log.debug('getReportData() called with', options);
+    if (!taskId) {
+      const reportOptions = search.lookupFields({
+        type: 'customrecord_sl_reportrunnerconfig',
+        id: reportId,
+        columns: ['custrecord_slrr_suiteqlquery', 'custrecord_slrr_savedsearch']
+      });
+      const taskId = reportOptions.custrecord_slrr_suiteqlquery ? initiateQueryTask(reportOptions.custrecord_slrr_suiteqlquery, requestGuid) :
+        getAllSearchResults(reportOptions.custrecord_slrr_savedsearch, requestGuid);
+      return { status: 'QUERY_INITIATED', taskId };
+    } else {
+      const taskStatus = task.checkStatus({ taskId: taskId });
+      log.debug('getReportData() taskStatus', taskStatus);
+      if (taskStatus.status === task.TaskStatus.COMPLETE) {
+        const results = []; //TODO: fetch results from file
+        log.debug('getReportData() results', results);
+        return { status: 'COMPLETE', data: results };
+      } else if (taskStatus.status === task.TaskStatus.FAILED) {
+        return { status: 'FAILED', message: 'The report generation task failed.' };
+      } else {
+        return { status: taskStatus.status, taskId };
+      }
+    }
+  }
 
-    const reportOptions = search.lookupFields({
-      type: 'customrecord_sl_reportrunnerconfig',
-      id: reportId,
-      columns: ['custrecord_slrr_suiteqlquery', 'custrecord_slrr_savedsearch']
+
+  function initiateQueryTask(suiteQL, requestGuid) {
+    const basePath = getBaseFilePath();
+    return task.create({
+      taskType: task.TaskType.SUITE_QL,
+      query: suiteQL,
+      filePath: `${basePath}/${requestGuid}.csv`
+    }).submit();
+  }
+
+  function getBaseFilePath() {
+    return runtime.getCurrentScript().getParameter('custscript_slrr_export_basepath') || '/TEMP';
+  }
+
+  function getAllSearchResults(savedSearchId) {
+    const results = [];
+    if (!savedSearchId) {
+      return results;
+    }
+    // Basic Implementation - 4000 result limit
+    const savedSearch = search.load({ id: savedSearchId });
+    savedSearch.run().each(result => {
+      const resultObj = {};
+      result.columns.forEach(column => {
+        resultObj[column.name] = result.getValue(column);
+      });
+      results.push(resultObj);
+      return true; // continue iteration
     });
-    // TODO: Add support for saved search reports
-    return query.runSuiteQL({ query: reportOptions.custrecord_slrr_suiteqlquery }).asMappedResults();
+    log.debug('getAllSearchResults() results', results);
+    return results;
+
   }
 
 

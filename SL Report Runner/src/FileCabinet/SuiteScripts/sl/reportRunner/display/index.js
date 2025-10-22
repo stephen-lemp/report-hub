@@ -88,9 +88,49 @@ const CustomHeaderFilters = {
 };
 
 
+// poller using setInterval, resolves with the *final data array*
+function pollForData(statusUrl, params, intervalMs = 2000, maxTries = 300) {
+  console.log('pollForData() called with', { statusUrl, params, intervalMs, maxTries });
+  return new Promise((resolve, reject) => {
+    let tries = 0;
+    let { taskId, requestGuid } = params;
+
+    const timer = setInterval(() => {
+      console.log('pollForData() polling...', { tries, taskId, requestGuid });
+      makeRequest('POST', `${statusUrl}&taskId=${taskId ? taskId : ''}&requestGuid=${requestGuid}`)
+        .then(response => {
+          response = JSON.parse(response);
+          console.log('pollForData() response', response);
+          const status = (response.status || '').toUpperCase();
+          if (status === 'COMPLETE' || status === 'SUCCEEDED') {
+            clearInterval(timer);
+            resolve(response.data || []);
+          } else if (status === 'FAILED') {
+            clearInterval(timer);
+            reject(new Error('Task failed'));
+          } else if (++tries >= maxTries) {
+            clearInterval(timer);
+            reject(new Error('Timeout while waiting for data'));
+          } // else keep waiting
+          taskId = response.taskId; //update taskId for next poll
+        })
+        .catch(err => {
+          clearInterval(timer);
+          reject(err);
+          console.error('pollForData() makeRequest error', err);
+        });
+    }, intervalMs);
+  }).catch(err => {
+    console.error('pollForData() error', err);
+    throw err;
+  });
+}
+
+
 async function setupDocumentReady() {
   currentReportId = cr.getValue('custpage_reportid');
   console.log('reportId', currentReportId);
+  const requestGuid = `${runtime.getCurrentUser().id}-${new Date().getTime()}-${currentReportId}`;
 
   resultsTable = new Tabulator(
     `#results-table`,
@@ -102,8 +142,11 @@ async function setupDocumentReady() {
       autoColumns: 'full',
       paginationCounter: 'rows', //add pagination row counter
       dataLoader: true, // Show loader while fetching data
-      ajaxURL: `${location.href}&action=GET_REPORT_DATA&reportId=${currentReportId}`,
-      ajaxConfig: 'POST'
+      ajaxURL: `${location.href}&action=GET_REPORT_DATA&reportId=${currentReportId}&requestGuid=${requestGuid}`,
+      ajaxConfig: 'POST',
+      ajaxRequestFunc: function (url, config, params) {
+        return pollForData(url, params, 2000, 300); // resolves with []
+      }
     }
   );
 
