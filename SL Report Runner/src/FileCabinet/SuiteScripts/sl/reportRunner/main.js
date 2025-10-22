@@ -65,16 +65,9 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
   function getReportData(options) {
     const { reportId, requestGuid, taskId } = options;
     log.debug('getReportData() called with', options);
-    if (!taskId) {
-      const reportOptions = search.lookupFields({
-        type: 'customrecord_sl_reportrunnerconfig',
-        id: reportId,
-        columns: ['custrecord_slrr_suiteqlquery', 'custrecord_slrr_savedsearch']
-      });
-      const taskId = reportOptions.custrecord_slrr_suiteqlquery ? initiateQueryTask(reportOptions.custrecord_slrr_suiteqlquery, requestGuid) :
-        getAllSearchResults(reportOptions.custrecord_slrr_savedsearch, requestGuid);
-      return { status: 'QUERY_INITIATED', taskId };
-    } else {
+
+    //custrecord_slrr_usequickrun
+    if (taskId) { // polling for existing task
       const taskStatus = task.checkStatus({ taskId: taskId });
       log.debug('getReportData() taskStatus', taskStatus);
       if (taskStatus.status === task.TaskStatus.COMPLETE) {
@@ -86,6 +79,26 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
       } else {
         return { status: taskStatus.status, taskId };
       }
+    } else {
+      const reportOptions = search.lookupFields({
+        type: 'customrecord_sl_reportrunnerconfig',
+        id: reportId,
+        columns: ['custrecord_slrr_suiteqlquery', 'custrecord_slrr_savedsearch', 'custrecord_slrr_usequickrun']
+      });
+      log.debug('getReportData() reportOptions', reportOptions);
+      const isQuickRunReport = reportOptions.custrecord_slrr_usequickrun;
+      if (isQuickRunReport) {
+        const results = reportOptions.custrecord_slrr_suiteqlquery ?
+          query.runSuiteQL({ query: reportOptions.custrecord_slrr_suiteqlquery }).asMappedResults() :
+          getAllSearchResults(reportOptions.custrecord_slrr_savedsearch);
+        log.debug('getReportData() results', results);
+        return { status: 'COMPLETE', data: results };
+      } else {
+        const taskId = reportOptions.custrecord_slrr_suiteqlquery ? initiateQueryTask(reportOptions.custrecord_slrr_suiteqlquery, requestGuid) :
+          getAllSearchResults(reportOptions.custrecord_slrr_savedsearch, requestGuid);
+        return { status: 'QUERY_INITIATED', taskId };
+      }
+
     }
   }
 
