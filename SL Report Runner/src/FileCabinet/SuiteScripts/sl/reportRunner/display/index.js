@@ -148,7 +148,7 @@ function getDataFromLink(dataLink, requestGuid) {
     .then(response => response.text())
     .then(csvText => {
       const results = Papa.parse(csvText, { header: true, skipEmptyLines: true });
-      makeRequest('POST', `${location.href}&action=DELETE_FILE&requestGuid=${requestGuid}`);
+      makeRequest('POST', getUrl({ action: 'DELETE_FILE', requestGuid }));
       console.log('pp results', results);
       return results.data;
     })
@@ -171,7 +171,7 @@ async function setupDocumentReady() {
       autoColumns: 'full',
       paginationCounter: 'rows', //add pagination row counter
       dataLoader: true, // Show loader while fetching data
-      ajaxURL: `${location.href}&action=GET_REPORT_DATA&reportId=${currentReportId}&requestGuid=${requestGuid}`,
+      ajaxURL: getUrl({ action: 'GET_REPORT_DATA', reportId: currentReportId, requestGuid }),
       ajaxConfig: 'POST',
       ajaxRequestFunc: function (url, config, params) {
         return pollForData(url, params, 2000, 300); // resolves with []
@@ -204,7 +204,7 @@ async function setupDocumentReady() {
 }
 
 function getCustomColumnDefinitions(definitions) {
-  return makeRequest('POST', `${location.href}&action=GET_REPORT_COLUMNS&reportId=${currentReportId}`)
+  return makeRequest('POST', getUrl({ action: 'GET_REPORT_COLUMNS', reportId: currentReportId }))
     .then((response) => {
       const customDefinitions = JSON.parse(response || '[]');
       console.log('Custom Definitions:', customDefinitions);
@@ -216,6 +216,21 @@ function getCustomColumnDefinitions(definitions) {
     });
 }
 
+function getUrl(parameters = {}) {
+  const currentUrl = new URL(window.location.href);
+
+  const newUrl = new URL(currentUrl.origin + currentUrl.pathname);
+
+  const params = currentUrl.searchParams;
+  ['script', 'deploy'].forEach(key => {
+    const value = params.get(key);
+    if (value) newUrl.searchParams.set(key, value);
+  });
+  for (const param in parameters) {
+    newUrl.searchParams.set(param, parameters[param]);
+  }
+  return newUrl.toString();
+}
 
 // https://stackoverflow.com/questions/30008114/how-do-i-promisify-native-xhr
 function makeRequest(method, url, body) {
