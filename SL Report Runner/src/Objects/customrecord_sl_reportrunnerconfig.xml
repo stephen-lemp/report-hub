@@ -1,0 +1,300 @@
+<customrecordtype scriptid="customrecord_sl_reportrunnerconfig">
+  <accesstype>NONENEEDED</accesstype>
+  <allowattachments>T</allowattachments>
+  <allowinlinedeleting>F</allowinlinedeleting>
+  <allowinlinedetaching>T</allowinlinedetaching>
+  <allowinlineediting>F</allowinlineediting>
+  <allowmobileaccess>F</allowmobileaccess>
+  <allownumberingoverride>F</allownumberingoverride>
+  <allowquickadd>T</allowquickadd>
+  <allowquicksearch>F</allowquicksearch>
+  <allowuiaccess>T</allowuiaccess>
+  <customsegment></customsegment>
+  <description>Configuration of a report that should be available on the Report Runner page.</description>
+  <enabledle>T</enabledle>
+  <enablekeywords>T</enablekeywords>
+  <enablemailmerge>F</enablemailmerge>
+  <enablenametranslation>F</enablenametranslation>
+  <enablenumbering>F</enablenumbering>
+  <enableoptimisticlocking>T</enableoptimisticlocking>
+  <enablesystemnotes>T</enablesystemnotes>
+  <externalrolepermissionlevel>NONE</externalrolepermissionlevel>
+  <hierarchical>F</hierarchical>
+  <icon></icon>
+  <iconbuiltin>T</iconbuiltin>
+  <iconindex></iconindex>
+  <includeinsearchmenu>T</includeinsearchmenu>
+  <includename>T</includename>
+  <isinactive>F</isinactive>
+  <isordered>F</isordered>
+  <numberinginit></numberinginit>
+  <numberingmindigits></numberingmindigits>
+  <numberingprefix></numberingprefix>
+  <numberingsuffix></numberingsuffix>
+  <publicpermissionlevel>NONE</publicpermissionlevel>
+  <recordname>Report Runner Config</recordname>
+  <showcreationdate>F</showcreationdate>
+  <showcreationdateonlist>F</showcreationdateonlist>
+  <showid>F</showid>
+  <showlastmodified>F</showlastmodified>
+  <showlastmodifiedonlist>F</showlastmodifiedonlist>
+  <shownotes>T</shownotes>
+  <showowner>F</showowner>
+  <showownerallowchange>F</showownerallowchange>
+  <showowneronlist>F</showowneronlist>
+  <customrecordcustomfields>
+    <customrecordcustomfield scriptid="custrecord_slrr_suiteqlquery">
+      <accesslevel>2</accesslevel>
+      <allowquickadd>F</allowquickadd>
+      <applyformatting>F</applyformatting>
+      <checkspelling>F</checkspelling>
+      <defaultchecked>F</defaultchecked>
+      <defaultselection></defaultselection>
+      <defaultvalue></defaultvalue>
+      <description>A query to run and display results.</description>
+      <displayheight></displayheight>
+      <displaytype>NORMAL</displaytype>
+      <displaywidth></displaywidth>
+      <dynamicdefault></dynamicdefault>
+      <enabletextenhance>F</enabletextenhance>
+      <encryptatrest>F</encryptatrest>
+      <fieldtype>CLOBTEXT</fieldtype>
+      <globalsearch>F</globalsearch>
+      <help>A query to run and display results.</help>
+      <isformula>F</isformula>
+      <ismandatory>F</ismandatory>
+      <isparent>F</isparent>
+      <label>SuiteQL Query</label>
+      <linktext></linktext>
+      <maxlength></maxlength>
+      <maxvalue></maxvalue>
+      <minvalue></minvalue>
+      <onparentdelete></onparentdelete>
+      <parentsubtab></parentsubtab>
+      <rolerestrict>F</rolerestrict>
+      <searchcomparefield></searchcomparefield>
+      <searchdefault></searchdefault>
+      <searchlevel>2</searchlevel>
+      <selectrecordtype></selectrecordtype>
+      <showinlist>F</showinlist>
+      <sourcefilterby></sourcefilterby>
+      <sourcefrom></sourcefrom>
+      <sourcelist></sourcelist>
+      <storevalue>T</storevalue>
+      <subtab></subtab>
+    </customrecordcustomfield>
+    <customrecordcustomfield scriptid="custrecord_slrr_savedsearch">
+      <accesslevel>2</accesslevel>
+      <allowquickadd>F</allowquickadd>
+      <applyformatting>F</applyformatting>
+      <checkspelling>F</checkspelling>
+      <defaultchecked>F</defaultchecked>
+      <defaultselection></defaultselection>
+      <defaultvalue></defaultvalue>
+      <description>Link to a Saved Search to run.</description>
+      <displayheight></displayheight>
+      <displaytype>NORMAL</displaytype>
+      <displaywidth></displaywidth>
+      <dynamicdefault></dynamicdefault>
+      <enabletextenhance>F</enabletextenhance>
+      <encryptatrest>F</encryptatrest>
+      <fieldtype>SELECT</fieldtype>
+      <globalsearch>F</globalsearch>
+      <help>Link to a Saved Search to run.</help>
+      <isformula>F</isformula>
+      <ismandatory>F</ismandatory>
+      <isparent>F</isparent>
+      <label>Saved Search</label>
+      <linktext></linktext>
+      <maxlength></maxlength>
+      <maxvalue></maxvalue>
+      <minvalue></minvalue>
+      <onparentdelete>NO_ACTION</onparentdelete>
+      <parentsubtab></parentsubtab>
+      <rolerestrict>F</rolerestrict>
+      <searchcomparefield></searchcomparefield>
+      <searchdefault></searchdefault>
+      <searchlevel>2</searchlevel>
+      <selectrecordtype>-119</selectrecordtype>
+      <showinlist>F</showinlist>
+      <sourcefilterby></sourcefilterby>
+      <sourcefrom></sourcefrom>
+      <sourcelist></sourcelist>
+      <storevalue>T</storevalue>
+      <subtab></subtab>
+    </customrecordcustomfield>
+    <customrecordcustomfield scriptid="custrecord_slrr_usequickrun">
+      <accesslevel>2</accesslevel>
+      <allowquickadd>F</allowquickadd>
+      <applyformatting>F</applyformatting>
+      <checkspelling>F</checkspelling>
+      <defaultchecked>F</defaultchecked>
+      <defaultselection></defaultselection>
+      <defaultvalue></defaultvalue>
+      <description>Checkbox indicating if script should run query or saved search ad hoc or if it should offload to background job and use polling to show results.</description>
+      <displayheight></displayheight>
+      <displaytype>NORMAL</displaytype>
+      <displaywidth></displaywidth>
+      <dynamicdefault></dynamicdefault>
+      <enabletextenhance>F</enabletextenhance>
+      <encryptatrest>F</encryptatrest>
+      <fieldtype>CHECKBOX</fieldtype>
+      <globalsearch>F</globalsearch>
+      <help>Use this checkbox if you want results to appear more quickly and have less than 5000 results for SuiteQL queries and less than 4000 results for Saved Search results.</help>
+      <isformula>F</isformula>
+      <ismandatory>F</ismandatory>
+      <isparent>F</isparent>
+      <label>Quick Run</label>
+      <linktext></linktext>
+      <maxlength></maxlength>
+      <maxvalue></maxvalue>
+      <minvalue></minvalue>
+      <onparentdelete></onparentdelete>
+      <parentsubtab></parentsubtab>
+      <rolerestrict>F</rolerestrict>
+      <searchcomparefield></searchcomparefield>
+      <searchdefault></searchdefault>
+      <searchlevel>2</searchlevel>
+      <selectrecordtype></selectrecordtype>
+      <showinlist>T</showinlist>
+      <sourcefilterby></sourcefilterby>
+      <sourcefrom></sourcefrom>
+      <sourcelist></sourcelist>
+      <storevalue>T</storevalue>
+      <subtab></subtab>
+    </customrecordcustomfield>
+    <customrecordcustomfield scriptid="custrecord_slrrc_category">
+      <accesslevel>2</accesslevel>
+      <allowquickadd>F</allowquickadd>
+      <applyformatting>F</applyformatting>
+      <checkspelling>F</checkspelling>
+      <defaultchecked>F</defaultchecked>
+      <defaultselection></defaultselection>
+      <defaultvalue></defaultvalue>
+      <description>The category of this report. Used for layout on main report selection page.</description>
+      <displayheight></displayheight>
+      <displaytype>NORMAL</displaytype>
+      <displaywidth></displaywidth>
+      <dynamicdefault></dynamicdefault>
+      <enabletextenhance>F</enabletextenhance>
+      <encryptatrest>F</encryptatrest>
+      <fieldtype>TEXT</fieldtype>
+      <globalsearch>F</globalsearch>
+      <help>Enter the category you&apos;d like to assign this report. This impacts how the main report selection page looks. Use a colon (:) to define sub-categories. For example, you could enter something like &quot;Sales : Planning : Historical Sales&quot; as a category. You can define up to 5 levels of categorization.</help>
+      <isformula>F</isformula>
+      <ismandatory>F</ismandatory>
+      <isparent>F</isparent>
+      <label>Category</label>
+      <linktext></linktext>
+      <maxlength></maxlength>
+      <maxvalue></maxvalue>
+      <minvalue></minvalue>
+      <onparentdelete></onparentdelete>
+      <parentsubtab></parentsubtab>
+      <rolerestrict>F</rolerestrict>
+      <searchcomparefield></searchcomparefield>
+      <searchdefault></searchdefault>
+      <searchlevel>2</searchlevel>
+      <selectrecordtype></selectrecordtype>
+      <showinlist>T</showinlist>
+      <sourcefilterby></sourcefilterby>
+      <sourcefrom></sourcefrom>
+      <sourcelist></sourcelist>
+      <storevalue>T</storevalue>
+      <subtab></subtab>
+    </customrecordcustomfield>
+    <customrecordcustomfield scriptid="custrecord_slrrc_availableto">
+      <accesslevel>2</accesslevel>
+      <allowquickadd>F</allowquickadd>
+      <applyformatting>F</applyformatting>
+      <checkspelling>F</checkspelling>
+      <defaultchecked>F</defaultchecked>
+      <defaultselection></defaultselection>
+      <defaultvalue></defaultvalue>
+      <description>Restricts who has access to run this report.</description>
+      <displayheight></displayheight>
+      <displaytype>NORMAL</displaytype>
+      <displaywidth></displaywidth>
+      <dynamicdefault></dynamicdefault>
+      <enabletextenhance>F</enabletextenhance>
+      <encryptatrest>F</encryptatrest>
+      <fieldtype>MULTISELECT</fieldtype>
+      <globalsearch>F</globalsearch>
+      <help>Select the roles with access to this report.</help>
+      <isformula>F</isformula>
+      <ismandatory>F</ismandatory>
+      <isparent>F</isparent>
+      <label>Available To</label>
+      <linktext></linktext>
+      <maxlength></maxlength>
+      <maxvalue></maxvalue>
+      <minvalue></minvalue>
+      <onparentdelete>NO_ACTION</onparentdelete>
+      <parentsubtab></parentsubtab>
+      <rolerestrict>F</rolerestrict>
+      <searchcomparefield></searchcomparefield>
+      <searchdefault></searchdefault>
+      <searchlevel>2</searchlevel>
+      <selectrecordtype>-118</selectrecordtype>
+      <showinlist>F</showinlist>
+      <sourcefilterby></sourcefilterby>
+      <sourcefrom></sourcefrom>
+      <sourcelist></sourcelist>
+      <storevalue>T</storevalue>
+      <subtab></subtab>
+    </customrecordcustomfield>
+    <customrecordcustomfield scriptid="custrecord_slrrc_availabletoall">
+      <accesslevel>2</accesslevel>
+      <allowquickadd>F</allowquickadd>
+      <applyformatting>F</applyformatting>
+      <checkspelling>F</checkspelling>
+      <defaultchecked>F</defaultchecked>
+      <defaultselection></defaultselection>
+      <defaultvalue></defaultvalue>
+      <description>Indicates this report will show on everyone&apos;s list of reports.</description>
+      <displayheight></displayheight>
+      <displaytype>NORMAL</displaytype>
+      <displaywidth></displaywidth>
+      <dynamicdefault></dynamicdefault>
+      <enabletextenhance>F</enabletextenhance>
+      <encryptatrest>F</encryptatrest>
+      <fieldtype>CHECKBOX</fieldtype>
+      <globalsearch>F</globalsearch>
+      <help>Check this box for this report to show on everyone&apos;s list of reports.</help>
+      <isformula>F</isformula>
+      <ismandatory>F</ismandatory>
+      <isparent>F</isparent>
+      <label>Available To All</label>
+      <linktext></linktext>
+      <maxlength></maxlength>
+      <maxvalue></maxvalue>
+      <minvalue></minvalue>
+      <onparentdelete></onparentdelete>
+      <parentsubtab></parentsubtab>
+      <rolerestrict>F</rolerestrict>
+      <searchcomparefield></searchcomparefield>
+      <searchdefault></searchdefault>
+      <searchlevel>2</searchlevel>
+      <selectrecordtype></selectrecordtype>
+      <showinlist>F</showinlist>
+      <sourcefilterby></sourcefilterby>
+      <sourcefrom></sourcefrom>
+      <sourcelist></sourcelist>
+      <storevalue>T</storevalue>
+      <subtab></subtab>
+    </customrecordcustomfield>
+  </customrecordcustomfields>
+  <links>
+    <link>
+      <linkcategory>BASICSETUPCUSTOM</linkcategory>
+      <linklabel>Report Runner Configurations</linklabel>
+      <linktasktype>LIST</linktasktype>
+    </link>
+  </links>
+  <subtabs>
+    <subtab scriptid="_slrr_filtersandoptions">
+      <tabparent></tabparent>
+      <tabtitle>Filters and Options</tabtitle>
+    </subtab>
+  </subtabs>
+</customrecordtype>
