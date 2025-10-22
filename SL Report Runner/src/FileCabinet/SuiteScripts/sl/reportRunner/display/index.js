@@ -140,7 +140,7 @@ function getDataFromLink(dataLink) {
   return fetch(`${window.location.origin}${dataLink}`)
     .then(response => response.text())
     .then(csvText => {
-      const results = Papa.parse(csvText, { header: true });
+      const results = Papa.parse(csvText, { header: true, skipEmptyLines: true });
       console.log('pp results', results);
       return results.data;
     })
