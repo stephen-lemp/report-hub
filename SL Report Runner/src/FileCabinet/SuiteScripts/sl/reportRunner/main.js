@@ -16,10 +16,15 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query'], funct
         } else if (action === 'GET_REPORT_DATA') {
           const reportId = context.request.parameters.reportId;
           log.debug({ title: 'Generating Report Data', details: `Report ID: ${reportId}` });
-
           context.response.setHeader({ name: 'Content-Type', value: 'application/json' });
           context.response.write(JSON.stringify(getReportData(reportId)));
-        } else {
+        } else if (action === 'GET_REPORT_COLUMNS') {
+          const reportId = context.request.parameters.reportId;
+          context.response.setHeader({ name: 'Content-Type', value: 'application/json' });
+          context.response.write(getReportColumnDefinitionsById(reportId) || '[]');
+        }
+
+        else {
           context.response.write(JSON.stringify({ success: false, message: 'Unknown action' }));
         }
       } else {
@@ -34,6 +39,27 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query'], funct
     }
   }
 
+  function getReportColumnDefinitionsById(reportId) {
+    log.debug({ title: 'getReportColumnDefinitionsById', details: `Report ID: ${reportId}` });
+    const results = [];
+    query.runSuiteQL({
+      query: `SELECT 	custrecord_slrrc_id field, 	custrecord_srllc_title title, 	custrecord_srllc_headerfilter headerfilter, 	custrecord_srllc_headerfilteroptions headerfilteroptions 
+              FROM customrecord_slrr_columns 
+              WHERE custrecord_slrrc_configlink = ?`,
+      params: [reportId]
+    }).asMappedResults().forEach(result => {
+      results.push(
+        {
+          field: result.field,
+          title: result.title,
+          headerFilter: result.headerfilter,
+          headerFilterOptions: result.headerfilteroptions ? JSON.parse(result.headerfilteroptions) : undefined
+        });
+      return result.custrecord_slrr_column_definitions || '[]';
+    });
+    log.debug('getReportColumnDefinitionsById() results', results);
+    return JSON.stringify(results);
+  }
 
   function getReportData(reportId) {
 
