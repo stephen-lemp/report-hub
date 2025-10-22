@@ -163,7 +163,7 @@
       <storevalue>T</storevalue>
       <subtab></subtab>
     </customrecordcustomfield>
-    <customrecordcustomfield scriptid="custrecord_srllc_headerfilter">
+    <customrecordcustomfield scriptid="custrecord_slrrc_headerfilter">
       <accesslevel>2</accesslevel>
       <allowquickadd>F</allowquickadd>
       <applyformatting>F</applyformatting>
@@ -171,8 +171,9 @@
       <defaultchecked>F</defaultchecked>
       <defaultselection></defaultselection>
       <defaultvalue></defaultvalue>
-      <description>The type of header filter to use (if any) for this column. Shares properties with the &quot;Editor&quot; Tabulator options. See&#xd;
-https://tabulator.info/docs/6.3/filter#header</description>
+      <description>The type of header filter to use (if any) for this column. Shares properties with
+        the &quot;Editor&quot; Tabulator options. See&#xd;
+        https://tabulator.info/docs/6.3/filter#header</description>
       <displayheight></displayheight>
       <displaytype>NORMAL</displaytype>
       <displaywidth></displaywidth>
@@ -181,8 +182,9 @@ https://tabulator.info/docs/6.3/filter#header</description>
       <encryptatrest>F</encryptatrest>
       <fieldtype>TEXT</fieldtype>
       <globalsearch>F</globalsearch>
-      <help>The type of header filter to use (if any) for this column. Shares properties with the &quot;Editor&quot; Tabulator options. See&#xd;
-https://tabulator.info/docs/6.3/filter#header</help>
+      <help>The type of header filter to use (if any) for this column. Shares properties with the
+        &quot;Editor&quot; Tabulator options. See&#xd;
+        https://tabulator.info/docs/6.3/filter#header</help>
       <isformula>F</isformula>
       <ismandatory>F</ismandatory>
       <isparent>F</isparent>
@@ -205,7 +207,7 @@ https://tabulator.info/docs/6.3/filter#header</help>
       <storevalue>T</storevalue>
       <subtab></subtab>
     </customrecordcustomfield>
-    <customrecordcustomfield scriptid="custrecord_srllc_headerfilteroptions">
+    <customrecordcustomfield scriptid="custrecord_slrrc_headerfilteroptions">
       <accesslevel>2</accesslevel>
       <allowquickadd>F</allowquickadd>
       <applyformatting>F</applyformatting>
@@ -227,6 +229,46 @@ https://tabulator.info/docs/6.3/filter#header</help>
       <ismandatory>F</ismandatory>
       <isparent>F</isparent>
       <label>Header Filter Options (JSON)</label>
+      <linktext></linktext>
+      <maxlength></maxlength>
+      <maxvalue></maxvalue>
+      <minvalue></minvalue>
+      <onparentdelete></onparentdelete>
+      <parentsubtab></parentsubtab>
+      <rolerestrict>F</rolerestrict>
+      <searchcomparefield></searchcomparefield>
+      <searchdefault></searchdefault>
+      <searchlevel>2</searchlevel>
+      <selectrecordtype></selectrecordtype>
+      <showinlist>T</showinlist>
+      <sourcefilterby></sourcefilterby>
+      <sourcefrom></sourcefrom>
+      <sourcelist></sourcelist>
+      <storevalue>T</storevalue>
+      <subtab></subtab>
+    </customrecordcustomfield>
+    <customrecordcustomfield scriptid="custrecord_slrrc_formatter">
+      <accesslevel>2</accesslevel>
+      <allowquickadd>F</allowquickadd>
+      <applyformatting>F</applyformatting>
+      <checkspelling>F</checkspelling>
+      <defaultchecked>F</defaultchecked>
+      <defaultselection></defaultselection>
+      <defaultvalue></defaultvalue>
+      <description>Set the formatter for this column.</description>
+      <displayheight></displayheight>
+      <displaytype>NORMAL</displaytype>
+      <displaywidth></displaywidth>
+      <dynamicdefault></dynamicdefault>
+      <enabletextenhance>F</enabletextenhance>
+      <encryptatrest>F</encryptatrest>
+      <fieldtype>TEXT</fieldtype>
+      <globalsearch>F</globalsearch>
+      <help>See https://tabulator.info/docs/6.3/format#formatter-html for available options.</help>
+      <isformula>F</isformula>
+      <ismandatory>F</ismandatory>
+      <isparent>F</isparent>
+      <label>Formatter</label>
       <linktext></linktext>
       <maxlength></maxlength>
       <maxvalue></maxvalue>

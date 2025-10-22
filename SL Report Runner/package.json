@@ -1,23 +1,5 @@
 {
   "name": "sl-report-runner",
   "version": "0.1.0",
-  "private": true,
-  "description": "SuiteCloud Report Runner project configured with StandardJS linting",
-  "devDependencies": {
-    "standard": "^17.1.0"
-  },
-  "standard": {
-    "globals": {
-      "define": "readonly",
-      "require": "readonly",
-      "runtime": "readonly",
-      "config": "readonly"
-    },
-    "envs": [
-      "es2021"
-    ],
-    "ignore": [
-      "src/FileCabinet/SuiteScripts/*/libs/**/*.js"
-    ]
-  }
+  "description": "SuiteCloud Report Runner Project. Publish any SuiteQL Query or Saved Search with ease. Utilize header filters and various performance enhancements for to make the experience super smooth for end users. "
 }

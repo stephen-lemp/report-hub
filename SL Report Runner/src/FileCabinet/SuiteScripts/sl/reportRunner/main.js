@@ -43,7 +43,7 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
     log.debug({ title: 'getReportColumnDefinitionsById', details: `Report ID: ${reportId}` });
     const results = [];
     query.runSuiteQL({
-      query: `SELECT  custrecord_slrrc_id field,  custrecord_srllc_title title,  custrecord_srllc_headerfilter headerfilter,  custrecord_slrrc_formatter formatter, custrecord_srllc_headerfilteroptions headerfilteroptions 
+      query: `SELECT  custrecord_slrrc_id field,  custrecord_slrrc_title title,  custrecord_slrrc_headerfilter headerfilter,  custrecord_slrrc_formatter formatter, custrecord_slrrc_headerfilteroptions headerfilteroptions 
               FROM customrecord_slrr_columns 
               WHERE custrecord_slrrc_configlink = ?`,
       params: [reportId]
