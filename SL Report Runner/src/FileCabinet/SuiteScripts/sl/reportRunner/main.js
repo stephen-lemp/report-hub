@@ -88,20 +88,50 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
       log.debug('getReportData() reportOptions', reportOptions);
       const isQuickRunReport = reportOptions.custrecord_slrr_usequickrun;
       if (isQuickRunReport) {
-        const results = reportOptions.custrecord_slrr_suiteqlquery ?
-          query.runSuiteQL({ query: reportOptions.custrecord_slrr_suiteqlquery }).asMappedResults() :
-          getAllSearchResults(reportOptions.custrecord_slrr_savedsearch);
+        const queryText = reportOptions.custrecord_slrr_suiteqlquery;
+        const savedSearchId = reportOptions.custrecord_slrr_savedsearch[0]?.value;
+        const results = queryText ?
+          query.runSuiteQL({ query: queryText }).asMappedResults() :
+          getAllSearchResults(savedSearchId);
         log.debug('getReportData() results', results);
         return { status: 'COMPLETE', data: results };
       } else {
-        const taskId = reportOptions.custrecord_slrr_suiteqlquery ? initiateQueryTask(reportOptions.custrecord_slrr_suiteqlquery, requestGuid) :
-          getAllSearchResults(reportOptions.custrecord_slrr_savedsearch, requestGuid);
+        const taskId = queryText ? initiateQueryTask(queryText, requestGuid) :
+          initiateSearchTask(savedSearchId, requestGuid);
         return { status: 'QUERY_INITIATED', taskId };
       }
 
     }
   }
 
+  function getAllSearchResults(savedSearchId) {
+    const results = [];
+    if (!savedSearchId) {
+      return results;
+    }
+    // Basic Implementation - 4000 result limit
+    const savedSearch = search.load({ id: savedSearchId });
+    log.debug('getAllSearchResults() savedSearchId', savedSearchId);
+    savedSearch.run().each(result => {
+      const resultObj = {};
+      result.columns.forEach(column => {
+        resultObj[column.name] = result.getText(column) || result.getValue(column);
+      });
+      results.push(resultObj);
+      return true; // continue iteration
+    });
+    log.debug('getAllSearchResults() results', results);
+    return results;
+  }
+
+  function initiateSearchTask(savedSearchId, requestGuid) {
+    const basePath = getBaseFilePath();
+    return task.create({
+      taskType: task.TaskType.SEARCH,
+      searchId: savedSearchId,
+      filePath: `${basePath}/${requestGuid}.csv`
+    }).submit();
+  }
 
   function initiateQueryTask(suiteQL, requestGuid) {
     const basePath = getBaseFilePath();
