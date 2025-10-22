@@ -14,6 +14,9 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
         const action = context.request.parameters.action;
         if (action === 'updateFavorites') {
           context.response.write(JSON.stringify({ success: handleUpdateFavorites(context) }));
+        } else if (action === 'DELETE_FILE') {
+          file.delete(getFileIdFromName(`${context.request.parameters.requestGuid}.csv`));
+          log.debug('deleted file', { requestGuid: context.request.parameters.requestGuid });
         } else if (action === 'GET_REPORT_DATA') {
           const reportId = context.request.parameters.reportId;
           log.debug({ title: 'Generating Report Data', details: `Report ID: ${reportId}` });
@@ -71,11 +74,11 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
       if (taskStatus.status === task.TaskStatus.COMPLETE) {
         const results = []; //TODO: fetch results from file
         log.debug('getReportData() results', results);
-        return { status: 'COMPLETE', dataLink: getDataLink(requestGuid) };
+        return { status: 'COMPLETE', dataLink: getDataLink(requestGuid), requestGuid };
       } else if (taskStatus.status === task.TaskStatus.FAILED) {
-        return { status: 'FAILED', message: 'The report generation task failed.' };
+        return { status: 'FAILED', message: 'The report generation task failed.', requestGuid };
       } else {
-        return { status: taskStatus.status, taskId };
+        return { status: taskStatus.status, taskId, requestGuid };
       }
     } else { // no task id. initiate new task or quick run
       const reportOptions = search.lookupFields({
@@ -92,13 +95,12 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
           query.runSuiteQL({ query: queryText }).asMappedResults() :
           getAllSearchResults(savedSearchId);
         log.debug('getReportData() results', results);
-        return { status: 'COMPLETE', data: results };
+        return { status: 'COMPLETE', data: results, requestGuid };
       } else {
         const taskId = queryText ? initiateQueryTask(queryText, requestGuid) :
           initiateSearchTask(savedSearchId, requestGuid);
-        return { status: 'QUERY_INITIATED', taskId };
+        return { status: 'QUERY_INITIATED', taskId, requestGuid };
       }
-
     }
   }
 
@@ -107,6 +109,14 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
       query: `SELECT url FROM file WHERE name = ?`,
       params: [`${requestGuid}.csv`]
     }).asMappedResults()[0]?.url || '';
+  }
+
+  function getFileIdFromName(fileName) {
+    log.debug('getFileIdFromName', fileName);
+    return query.runSuiteQL({
+      query: `SELECT id FROM file WHERE name = ?`,
+      params: [fileName]
+    }).asMappedResults()[0]?.id || 0;
   }
 
   function getAllSearchResults(savedSearchId) {

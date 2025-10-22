@@ -109,7 +109,7 @@ function pollForData(statusUrl, params, intervalMs = 2000, maxTries = 300) {
               resolve(response.data || []);
             } else if (response.dataLink) {
               console.log('pollForData() completed with dataLink', response.dataLink);
-              resolve(getDataFromLink(response.dataLink) || []);
+              resolve(getDataFromLink(response.dataLink, response.requestGuid) || []);
             } else {
               console.warn('pollForData() completed but no data or dataLink found in response', response);
               resolve([]);
@@ -136,11 +136,12 @@ function pollForData(statusUrl, params, intervalMs = 2000, maxTries = 300) {
 }
 
 
-function getDataFromLink(dataLink) {
+function getDataFromLink(dataLink, requestGuid) {
   return fetch(`${window.location.origin}${dataLink}`)
     .then(response => response.text())
     .then(csvText => {
       const results = Papa.parse(csvText, { header: true, skipEmptyLines: true });
+      makeRequest('POST', `${location.href}&action=DELETE_FILE&requestGuid=${requestGuid}`);
       console.log('pp results', results);
       return results.data;
     })
