@@ -12,9 +12,7 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
       if (context.request.method === 'POST') {
         log.debug({ title: 'POST Request', details: context.request });
         const action = context.request.parameters.action;
-        if (action === 'updateFavorites') {
-          context.response.write(JSON.stringify({ success: handleUpdateFavorites(context) }));
-        } else if (action === 'DELETE_FILE') {
+        if (action === 'DELETE_FILE') {
           file.delete(getFileIdFromName(`${context.request.parameters.requestGuid}.csv`));
           log.debug('deleted file', { requestGuid: context.request.parameters.requestGuid });
         } else if (action === 'GET_REPORT_DATA') {
@@ -143,7 +141,7 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
     const basePath = getBaseFilePath();
     return task.create({
       taskType: task.TaskType.SEARCH,
-      searchId: savedSearchId,
+      savedSearchId: savedSearchId,
       filePath: `${basePath}/${requestGuid}.csv`
     }).submit();
   }
@@ -183,34 +181,14 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
 
 
   function generateMainPage(context) {
-    const form = serverWidget.createForm({ title: 'Report Runner' });
+    const form = serverWidget.createForm({ title: 'SL Report Runner' });
 
-    // Add a field for favorites
     form.addField({
-      id: 'custpage_favoriatereports',
+      id: 'custpage_reportslisting',
       type: serverWidget.FieldType.INLINEHTML,
-      label: 'Favorites'
-    });
+      label: 'Reports Listing'
+    }).defaultValue = `<div id="reports-container"></div>`;
 
-    // Add a select field to display available reports
-    const reportsListField = form.addField({
-      id: 'custpage_reportselect',
-      type: serverWidget.FieldType.SELECT,
-      label: 'Report Name',
-    });
-    reportsListField.addSelectOption({ value: '', text: '' });
-    findAndSetAvailableReports(reportsListField);
-
-    form.addButton({
-      id: 'custpage_slrr_runreport',
-      label: 'Run Report',
-      functionName: 'runReport'
-    });
-    form.addButton({
-      id: 'custpage_slrr_addfavorite',
-      label: 'Add Favorite',
-      functionName: 'addFavorite'
-    });
     form.clientScriptModulePath = 'SuiteScripts/sl/reportRunner/client.js';
     context.response.writePage(form);
   }
@@ -253,43 +231,6 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
       .defaultValue = reportOptions.custrecord_slrr_tabulatoroptions || '{}';
 
     context.response.writePage(form);
-  }
-
-
-  function handleUpdateFavorites(context) {
-    const body = JSON.parse(context.request.body);
-    const favoriteReportIds = body.favoriteReportIds || '';
-    // Here you would typically save the favoriteReportIds to a user preference or custom record
-    // For this example, we'll just log them
-    log.debug({ title: 'Updated Favorite Reports', details: favoriteReportIds });
-    const userPreferences = config.load({ type: config.Type.USER_PREFERENCES });
-    userPreferences.setValue({
-      fieldId: 'custscript_slrr_favoritereports',
-      value: favoriteReportIds
-    });
-    userPreferences.save();
-    return true;
-  }
-
-
-  function findAndSetAvailableReports(reportsListField) {
-    const reportSearch = search.create({
-      type: 'customrecord_sl_reportrunnerconfig',
-      filters: [
-        ['isinactive', 'is', 'F']
-      ],
-      columns: [
-        search.createColumn({ name: 'name' }),
-        search.createColumn({ name: 'internalid' })
-      ]
-    });
-
-    reportSearch.run().each(result => {
-      const reportName = result.getValue({ name: 'name' });
-      const reportId = result.getValue({ name: 'internalid' });
-      reportsListField.addSelectOption({ value: reportId, text: reportName });
-      return true; // continue iteration
-    });
   }
 
 

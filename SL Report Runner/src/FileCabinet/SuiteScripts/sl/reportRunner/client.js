@@ -3,133 +3,78 @@
  * @NScriptType ClientScript
  * @author Stephen Lemp <sl@stephenlemp.com>
  */
-define(['N/currentRecord', 'N/runtime', 'N/search'], (currentRecord, runtime, search) => {
-  const cr = currentRecord.get();
-
-  const FavoritesManager = {
-    state: 'NEW', // NEW, LOADED, MODIFIED, ERROR
-    favorites: [],
-    renderHTML: () => {
-      if (FavoritesManager.state === 'ERROR') {
-        return '<p>Error loading favorite reports.</p>';
-      } else if (FavoritesManager.state === 'NEW') {
-        FavoritesManager.loadFavorites();
-      }
-
-      let html = '<ul>';
-      FavoritesManager.favorites.forEach(report => {
-        html += `<li>${report.name}</li>`;
-      });
-      html += '</ul>';
-      cr.setValue({ fieldId: 'custpage_favoriatereports', value: html });
-      return html;
-    },
-    addFavorite: () => {
-      const reportId = cr.getValue({ fieldId: 'custpage_reportselect' });
-      const reportName = cr.getText({ fieldId: 'custpage_reportselect' });
-      if (!reportId) {
-        alert('Please select a report to add to favorites.');
-        return;
-      }
-      if (FavoritesManager.favorites.find(r => r.id === reportId)) {
-        alert('This report is already in your favorites.');
-        return;
-      }
-      FavoritesManager.favorites.push({ id: reportId, name: reportName });
-      FavoritesManager.state = 'MODIFIED';
-      FavoritesManager.renderHTML();
-      FavoritesManager.syncFavorites();
-    },
-    removeFavorite: () => { },
-    syncFavorites: () => {
-      if (FavoritesManager.state !== 'MODIFIED') {
-        return;
-      }
-      const favoriteIds = FavoritesManager.favorites.map(r => r.id).join(',');
-      const url = `${location.href}&action=updateFavorites`;
-      const body = JSON.stringify({ favoriteReportIds: favoriteIds });
-      makeRequest('POST', url, body)
-        .then(response => {
-          console.log('Favorites updated successfully:', response);
-          FavoritesManager.state = 'LOADED';
-        })
-        .catch(error => {
-          console.error('Error updating favorites:', error);
-          FavoritesManager.state = 'ERROR';
-          alert('There was an error saving your favorite reports. Please try again later.');
-        });
-    },
-    loadFavorites: () => {
-      const favoriteReportIds = runtime.getCurrentScript().getParameter('custscript_slrr_favoritereports');
-      if (!favoriteReportIds) {
-        FavoritesManager.state = 'LOADED';
-        return [];
-      }
-      search.create({
-        type: 'customrecord_sl_reportrunnerconfig',
-        filters: [
-          ['internalid', 'anyof', favoriteReportIds ? favoriteReportIds.split(',') : []],
-          'AND',
-          ['isinactive', 'is', 'F']
-        ],
-        columns: [
-          search.createColumn({ name: 'name' }),
-          search.createColumn({ name: 'internalid' })
-        ]
-      }).run().each(result => {
-        FavoritesManager.favorites.push({
-          id: result.getValue({ name: 'internalid' }),
-          name: result.getValue({ name: 'name' })
-        });
-        return true; // Continue iteration
-      });
-      FavoritesManager.state = 'LOADED';
-      return FavoritesManager.favorites;
-    }
-  };
-
+define(['N/query', 'N/currentRecord', 'N/search'], (query, currentRecord, search) => {
 
   function pageInit() {
-    FavoritesManager.renderHTML();
+    renderReportsListing(getReportDefinitions());
   }
 
-  function runReport() {
-    console.log('running report', currentRecord.get().getValue({ fieldId: 'custpage_reportselect' }));
-    window.open(`/app/site/hosting/scriptlet.nl?script=customscript_slreportrunner&deploy=customdeploy_slrr_displayreport&reportId=${currentRecord.get().getValue({ fieldId: 'custpage_reportselect' })}`, '_blank');
-    return true;
+  function renderReportsListing(reportDefinitions) {
+    formatReportDefinitions(reportDefinitions);
   }
 
-
-  function addFavorite() {
-    FavoritesManager.addFavorite();
+  function getReportDefinitions() {
+    return query.runSuiteQL({
+      query: `select id, name, custrecord_slrrc_category from 	customrecord_sl_reportrunnerconfig where isinactive = 'F'`
+    }).asMappedResults();
   }
 
-  return { runReport, addFavorite, pageInit };
-});
+  function formatReportDefinitions(reports) {
 
+    const container = document.getElementById("reports-container");
+    const sectionMap = new Map();
 
+    function ensureSection(path, title, level) {
+      if (!sectionMap.has(path)) {
+        // Create heading
+        const heading = document.createElement("h" + level);
+        heading.textContent = title;
+        container.appendChild(heading);
 
-// https://stackoverflow.com/questions/30008114/how-do-i-promisify-native-xhr
-function makeRequest(method, url, body) {
-  return new Promise(function (resolve, reject) {
-    const xhr = new XMLHttpRequest();
-    xhr.open(method, url);
-    xhr.onload = function () {
-      if (xhr.status >= 200 && xhr.status < 300) {
-        resolve(xhr.response);
-      } else {
-        reject({
-          status: xhr.status,
-          statusText: xhr.statusText
-        });
+        // Create ul for reports under this heading
+        const ul = document.createElement("ul");
+        container.appendChild(ul);
+
+        sectionMap.set(path, { ul, heading });
       }
-    };
-    xhr.onerror = function () {
-      reject({
-        status: xhr.status,
-        statusText: xhr.statusText
-      });
-    };
-    xhr.send(body);
-  });
-}
+      return sectionMap.get(path).ul;
+    }
+
+    reports.forEach(report => {
+      let parentUl = container; // container is just placeholder for top-level
+      let level = 2;
+
+      if (report.custrecord_slrrc_category) {
+        const parts = report.custrecord_slrrc_category.split(":").map(p => p.trim());
+        let path = "";
+        parts.forEach((part, idx) => {
+          path += (idx > 0 ? "__" : "") + part;
+          // Ensure section exists
+          const ul = ensureSection(path, part, level);
+          parentUl = ul; // next report goes into this ul
+          level = Math.min(level + 1, 6);
+        });
+      } else {
+        // Reports without category: put them in top-level <ul>
+        if (!sectionMap.has("__top")) {
+          const ul = document.createElement("ul");
+          container.appendChild(ul);
+          sectionMap.set("__top", { ul });
+        }
+        parentUl = sectionMap.get("__top").ul;
+      }
+
+      // Add report as <li>
+      const li = document.createElement("li");
+      const a = document.createElement("a");
+      a.href = `${location.href}&action=GET_REPORT_DATA&reportId=${report.id}`;
+      a.textContent = report.name;
+      li.appendChild(a);
+      parentUl.appendChild(li);
+    });
+
+  }
+
+
+  return { pageInit };
+});

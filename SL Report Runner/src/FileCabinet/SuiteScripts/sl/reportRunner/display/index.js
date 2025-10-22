@@ -96,7 +96,7 @@ function pollForData(statusUrl, params, intervalMs = 2000, maxTries = 300) {
     let { taskId, requestGuid } = params;
 
     const timer = setInterval(() => {
-      document.getElementById('results-title').textContent = 'Results - ⏳ In Progress...';   // in progress
+      document.getElementById('results-title').textContent = 'Results - ⏳ Loading...';   // Loading
 
       console.log('pollForData() polling...', { tries, taskId, requestGuid });
       makeRequest('POST', `${statusUrl}&taskId=${taskId ? taskId : ''}&requestGuid=${requestGuid}`)
@@ -126,7 +126,7 @@ function pollForData(statusUrl, params, intervalMs = 2000, maxTries = 300) {
             document.getElementById('results-title').textContent = 'Results - ❌ ⏱️ Timeout ';
             reject(new Error('Timeout while waiting for data'));
           } else {
-            document.getElementById('results-title').textContent = 'Results - ⏳ In Progress...';   // in progress
+            document.getElementById('results-title').textContent = 'Results - ⏳ Loading...';   // Loading
             taskId = response.taskId; //update taskId for next poll
           }
         })

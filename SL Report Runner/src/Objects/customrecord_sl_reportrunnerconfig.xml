@@ -14,6 +14,7 @@
   <enabledle>T</enabledle>
   <enablekeywords>T</enablekeywords>
   <enablemailmerge>F</enablemailmerge>
+  <enablenametranslation>F</enablenametranslation>
   <enablenumbering>F</enablenumbering>
   <enableoptimisticlocking>T</enableoptimisticlocking>
   <enablesystemnotes>T</enablesystemnotes>
@@ -202,7 +203,54 @@
       <storevalue>T</storevalue>
       <subtab></subtab>
     </customrecordcustomfield>
+    <customrecordcustomfield scriptid="custrecord_slrrc_category">
+      <accesslevel>2</accesslevel>
+      <allowquickadd>F</allowquickadd>
+      <applyformatting>F</applyformatting>
+      <checkspelling>F</checkspelling>
+      <defaultchecked>F</defaultchecked>
+      <defaultselection></defaultselection>
+      <defaultvalue></defaultvalue>
+      <description>The category of this report. Used for layout on main report selection page.</description>
+      <displayheight></displayheight>
+      <displaytype>NORMAL</displaytype>
+      <displaywidth></displaywidth>
+      <dynamicdefault></dynamicdefault>
+      <enabletextenhance>F</enabletextenhance>
+      <encryptatrest>F</encryptatrest>
+      <fieldtype>TEXT</fieldtype>
+      <globalsearch>F</globalsearch>
+      <help>Enter the category you&apos;d like to assign this report. This impacts how the main report selection page looks. Use a colon (:) to define sub-categories. For example, you could enter something like &quot;Sales : Planning : Historical Sales&quot; as a category. You can define up to 5 levels of categorization.</help>
+      <isformula>F</isformula>
+      <ismandatory>F</ismandatory>
+      <isparent>F</isparent>
+      <label>Category</label>
+      <linktext></linktext>
+      <maxlength></maxlength>
+      <maxvalue></maxvalue>
+      <minvalue></minvalue>
+      <onparentdelete></onparentdelete>
+      <parentsubtab></parentsubtab>
+      <rolerestrict>F</rolerestrict>
+      <searchcomparefield></searchcomparefield>
+      <searchdefault></searchdefault>
+      <searchlevel>2</searchlevel>
+      <selectrecordtype></selectrecordtype>
+      <showinlist>T</showinlist>
+      <sourcefilterby></sourcefilterby>
+      <sourcefrom></sourcefrom>
+      <sourcelist></sourcelist>
+      <storevalue>T</storevalue>
+      <subtab></subtab>
+    </customrecordcustomfield>
   </customrecordcustomfields>
+  <links>
+    <link>
+      <linkcategory>BASICSETUPCUSTOM</linkcategory>
+      <linklabel>Report Runner Configurations</linklabel>
+      <linktasktype>LIST</linktasktype>
+    </link>
+  </links>
   <subtabs>
     <subtab scriptid="_slrr_filtersandoptions">
       <tabparent></tabparent>
