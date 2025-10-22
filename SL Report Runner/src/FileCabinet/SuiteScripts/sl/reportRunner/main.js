@@ -23,9 +23,7 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
           const reportId = context.request.parameters.reportId;
           context.response.setHeader({ name: 'Content-Type', value: 'application/json' });
           context.response.write(getReportColumnDefinitionsById(reportId) || '[]');
-        }
-
-        else {
+        } else {
           context.response.write(JSON.stringify({ success: false, message: 'Unknown action' }));
         }
       } else {
@@ -73,13 +71,13 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
       if (taskStatus.status === task.TaskStatus.COMPLETE) {
         const results = []; //TODO: fetch results from file
         log.debug('getReportData() results', results);
-        return { status: 'COMPLETE', data: results };
+        return { status: 'COMPLETE', dataLink: getDataLink(requestGuid) };
       } else if (taskStatus.status === task.TaskStatus.FAILED) {
         return { status: 'FAILED', message: 'The report generation task failed.' };
       } else {
         return { status: taskStatus.status, taskId };
       }
-    } else {
+    } else { // no task id. initiate new task or quick run
       const reportOptions = search.lookupFields({
         type: 'customrecord_sl_reportrunnerconfig',
         id: reportId,
@@ -87,9 +85,9 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
       });
       log.debug('getReportData() reportOptions', reportOptions);
       const isQuickRunReport = reportOptions.custrecord_slrr_usequickrun;
+      const queryText = reportOptions.custrecord_slrr_suiteqlquery;
+      const savedSearchId = reportOptions.custrecord_slrr_savedsearch[0]?.value;
       if (isQuickRunReport) {
-        const queryText = reportOptions.custrecord_slrr_suiteqlquery;
-        const savedSearchId = reportOptions.custrecord_slrr_savedsearch[0]?.value;
         const results = queryText ?
           query.runSuiteQL({ query: queryText }).asMappedResults() :
           getAllSearchResults(savedSearchId);
@@ -102,6 +100,13 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
       }
 
     }
+  }
+
+  function getDataLink(requestGuid) {
+    return query.runSuiteQL({
+      query: `SELECT url FROM file WHERE name = ?`,
+      params: [`${requestGuid}.csv`]
+    }).asMappedResults()[0]?.url || '';
   }
 
   function getAllSearchResults(savedSearchId) {

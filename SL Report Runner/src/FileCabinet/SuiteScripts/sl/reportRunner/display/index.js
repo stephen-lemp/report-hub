@@ -104,7 +104,16 @@ function pollForData(statusUrl, params, intervalMs = 2000, maxTries = 300) {
           const status = (response.status || '').toUpperCase();
           if (status === 'COMPLETE' || status === 'SUCCEEDED') {
             clearInterval(timer);
-            resolve(response.data || []);
+            if (response.data) {
+              console.log('pollForData() completed with data length', response.data?.length);
+              resolve(response.data || []);
+            } else if (response.dataLink) {
+              console.log('pollForData() completed with dataLink', response.dataLink);
+              resolve(getDataFromLink(response.dataLink) || []);
+            } else {
+              console.warn('pollForData() completed but no data or dataLink found in response', response);
+              resolve([]);
+            }
           } else if (status === 'FAILED') {
             clearInterval(timer);
             reject(new Error('Task failed'));
@@ -124,6 +133,18 @@ function pollForData(statusUrl, params, intervalMs = 2000, maxTries = 300) {
     console.error('pollForData() error', err);
     throw err;
   });
+}
+
+
+function getDataFromLink(dataLink) {
+  return fetch(`${window.location.origin}${dataLink}`)
+    .then(response => response.text())
+    .then(csvText => {
+      const results = Papa.parse(csvText, { header: true });
+      console.log('pp results', results);
+      return results.data;
+    })
+    .catch(console.error);
 }
 
 
