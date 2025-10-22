@@ -123,46 +123,6 @@
       <storevalue>T</storevalue>
       <subtab></subtab>
     </customrecordcustomfield>
-    <customrecordcustomfield scriptid="custrecord_slrr_tabulatoroptions">
-      <accesslevel>2</accesslevel>
-      <allowquickadd>F</allowquickadd>
-      <applyformatting>F</applyformatting>
-      <checkspelling>F</checkspelling>
-      <defaultchecked>F</defaultchecked>
-      <defaultselection></defaultselection>
-      <defaultvalue></defaultvalue>
-      <description>JSON Object of tabulator options.</description>
-      <displayheight></displayheight>
-      <displaytype>NORMAL</displaytype>
-      <displaywidth></displaywidth>
-      <dynamicdefault></dynamicdefault>
-      <enabletextenhance>F</enabletextenhance>
-      <encryptatrest>F</encryptatrest>
-      <fieldtype>CLOBTEXT</fieldtype>
-      <globalsearch>F</globalsearch>
-      <help>JSON Object of tabulator options. See help docs &lt;LINK_HERE&gt; for more information and examples.</help>
-      <isformula>F</isformula>
-      <ismandatory>F</ismandatory>
-      <isparent>F</isparent>
-      <label>Tabulator Options</label>
-      <linktext></linktext>
-      <maxlength></maxlength>
-      <maxvalue></maxvalue>
-      <minvalue></minvalue>
-      <onparentdelete></onparentdelete>
-      <parentsubtab></parentsubtab>
-      <rolerestrict>F</rolerestrict>
-      <searchcomparefield></searchcomparefield>
-      <searchdefault></searchdefault>
-      <searchlevel>2</searchlevel>
-      <selectrecordtype></selectrecordtype>
-      <showinlist>F</showinlist>
-      <sourcefilterby></sourcefilterby>
-      <sourcefrom></sourcefrom>
-      <sourcelist></sourcelist>
-      <storevalue>T</storevalue>
-      <subtab></subtab>
-    </customrecordcustomfield>
     <customrecordcustomfield scriptid="custrecord_slrr_usequickrun">
       <accesslevel>2</accesslevel>
       <allowquickadd>F</allowquickadd>
@@ -171,7 +131,8 @@
       <defaultchecked>F</defaultchecked>
       <defaultselection></defaultselection>
       <defaultvalue></defaultvalue>
-      <description>Checkbox indicating if script should run query or saved search ad hoc or if it should offload to background job and use polling to show results.</description>
+      <description>Checkbox indicating if script should run query or saved search ad hoc or if it
+        should offload to background job and use polling to show results.</description>
       <displayheight></displayheight>
       <displaytype>NORMAL</displaytype>
       <displaywidth></displaywidth>
@@ -180,7 +141,8 @@
       <encryptatrest>F</encryptatrest>
       <fieldtype>CHECKBOX</fieldtype>
       <globalsearch>F</globalsearch>
-      <help>Use this checkbox if you want results to appear more quickly and have less than 5000 results for SuiteQL queries and less than 4000 results for Saved Search results.</help>
+      <help>Use this checkbox if you want results to appear more quickly and have less than 5000
+        results for SuiteQL queries and less than 4000 results for Saved Search results.</help>
       <isformula>F</isformula>
       <ismandatory>F</ismandatory>
       <isparent>F</isparent>
@@ -220,7 +182,10 @@
       <encryptatrest>F</encryptatrest>
       <fieldtype>TEXT</fieldtype>
       <globalsearch>F</globalsearch>
-      <help>Enter the category you&apos;d like to assign this report. This impacts how the main report selection page looks. Use a colon (:) to define sub-categories. For example, you could enter something like &quot;Sales : Planning : Historical Sales&quot; as a category. You can define up to 5 levels of categorization.</help>
+      <help>Enter the category you&apos;d like to assign this report. This impacts how the main
+        report selection page looks. Use a colon (:) to define sub-categories. For example, you
+        could enter something like &quot;Sales : Planning : Historical Sales&quot; as a category.
+        You can define up to 5 levels of categorization.</help>
       <isformula>F</isformula>
       <ismandatory>F</ismandatory>
       <isparent>F</isparent>

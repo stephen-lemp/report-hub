@@ -6,7 +6,6 @@
  */
 define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/task', 'N/runtime'], function (serverWidget, search, config, file, query, task, runtime) {
 
-
   function onRequest(context) {
     try {
       if (context.request.method === 'POST') {
@@ -39,6 +38,7 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
     }
   }
 
+
   function getReportColumnDefinitionsById(reportId) {
     log.debug({ title: 'getReportColumnDefinitionsById', details: `Report ID: ${reportId}` });
     const results = [];
@@ -60,6 +60,7 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
     log.debug('getReportColumnDefinitionsById() results', results);
     return JSON.stringify(results);
   }
+
 
   function getReportData(options) {
     const { reportId, requestGuid, taskId } = options;
@@ -102,12 +103,14 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
     }
   }
 
+
   function getDataLink(requestGuid) {
     return query.runSuiteQL({
       query: `SELECT url FROM file WHERE name = ?`,
       params: [`${requestGuid}.csv`]
     }).asMappedResults()[0]?.url || '';
   }
+
 
   function getFileIdFromName(fileName) {
     log.debug('getFileIdFromName', fileName);
@@ -116,6 +119,7 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
       params: [fileName]
     }).asMappedResults()[0]?.id || 0;
   }
+
 
   function getAllSearchResults(savedSearchId) {
     const results = [];
@@ -137,6 +141,7 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
     return results;
   }
 
+
   function initiateSearchTask(savedSearchId, requestGuid) {
     const basePath = getBaseFilePath();
     return task.create({
@@ -145,6 +150,7 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
       filePath: `${basePath}/${requestGuid}.csv`
     }).submit();
   }
+
 
   function initiateQueryTask(suiteQL, requestGuid) {
     const basePath = getBaseFilePath();
@@ -155,9 +161,11 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
     }).submit();
   }
 
+
   function getBaseFilePath() {
     return runtime.getCurrentScript().getParameter('custscript_slrr_export_basepath') || '/TEMP';
   }
+
 
   function getAllSearchResults(savedSearchId) {
     const results = [];
@@ -199,7 +207,7 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
     const reportOptions = search.lookupFields({
       type: 'customrecord_sl_reportrunnerconfig',
       id: reportId,
-      columns: ['custrecord_slrr_tabulatoroptions', 'name']
+      columns: ['name']
     });
 
     const form = serverWidget.createForm({ title: reportOptions.name, hideNavBar: true });
@@ -221,14 +229,6 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
     })
       .updateDisplayType({ displayType: serverWidget.FieldDisplayType.HIDDEN })
       .defaultValue = reportId;
-
-    form.addField({
-      id: 'custpage_tabulatoroptions',
-      type: serverWidget.FieldType.LONGTEXT,
-      label: 'Tabulator Options'
-    })
-      .updateDisplayType({ displayType: serverWidget.FieldDisplayType.HIDDEN })
-      .defaultValue = reportOptions.custrecord_slrr_tabulatoroptions || '{}';
 
     context.response.writePage(form);
   }
