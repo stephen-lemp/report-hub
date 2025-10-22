@@ -96,6 +96,8 @@ function pollForData(statusUrl, params, intervalMs = 2000, maxTries = 300) {
     let { taskId, requestGuid } = params;
 
     const timer = setInterval(() => {
+      document.getElementById('results-title').textContent = 'Results - ⏳ In Progress...';   // in progress
+
       console.log('pollForData() polling...', { tries, taskId, requestGuid });
       makeRequest('POST', `${statusUrl}&taskId=${taskId ? taskId : ''}&requestGuid=${requestGuid}`)
         .then(response => {
@@ -103,6 +105,7 @@ function pollForData(statusUrl, params, intervalMs = 2000, maxTries = 300) {
           console.log('pollForData() response', response);
           const status = (response.status || '').toUpperCase();
           if (status === 'COMPLETE' || status === 'SUCCEEDED') {
+            document.getElementById('results-title').textContent = 'Results - ✅ Success!';        // success
             clearInterval(timer);
             if (response.data) {
               console.log('pollForData() completed with data length', response.data?.length);
@@ -115,13 +118,17 @@ function pollForData(statusUrl, params, intervalMs = 2000, maxTries = 300) {
               resolve([]);
             }
           } else if (status === 'FAILED') {
+            document.getElementById('results-title').textContent = 'Results - ❌ Failed';
             clearInterval(timer);
             reject(new Error('Task failed'));
           } else if (++tries >= maxTries) {
             clearInterval(timer);
+            document.getElementById('results-title').textContent = 'Results - ❌ ⏱️ Timeout ';
             reject(new Error('Timeout while waiting for data'));
-          } // else keep waiting
-          taskId = response.taskId; //update taskId for next poll
+          } else {
+            document.getElementById('results-title').textContent = 'Results - ⏳ In Progress...';   // in progress
+            taskId = response.taskId; //update taskId for next poll
+          }
         })
         .catch(err => {
           clearInterval(timer);
