@@ -49,7 +49,7 @@
       <loglevel>DEBUG</loglevel>
       <runasrole></runasrole>
       <status>TESTING</status>
-      <title>Implementation Gantt Chart</title>
+      <title>Big Data</title>
     </scriptdeployment>
   </scriptdeployments>
 </portlet>
