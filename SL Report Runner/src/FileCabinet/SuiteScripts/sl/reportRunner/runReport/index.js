@@ -1,16 +1,62 @@
 
+const BASE_URL = `/app/site/hosting/scriptlet.nl?script=customscript_slreportrunner&deploy=customdeploy_slreportrunner`;
+
 let resultsTable = null;
 let currentReportId = null;
+let portletApi = null;
+let portletResizePending = false;
+const PORTLET_MIN_HEIGHT = 420;
+const PORTLET_PADDING = 24;
 
 jQuery(document).ready(function () {
   require(['N/runtime', 'N/ui/message', 'N/currentRecord'], (runtime, message, currentRecord) => {
     window.cr = currentRecord.get();
     window.runtime = runtime;
     window.message = message;
+    requestPortletModule();
     setupDocumentReady();
     initializeDownloadButton();
   });
 });
+
+function requestPortletModule() {
+  if (typeof require !== 'function') {
+    return;
+  }
+  require(['N/portlet'], function (portlet) {
+    portletApi = portlet;
+    schedulePortletResize();
+  }, function (error) {
+    console.debug('N/portlet module unavailable', error);
+  });
+}
+
+function schedulePortletResize() {
+  if (!portletApi) {
+    return;
+  }
+  if (portletResizePending) {
+    return;
+  }
+  portletResizePending = true;
+  window.requestAnimationFrame(() => {
+    portletResizePending = false;
+    try {
+      const height = Math.max(document.body.scrollHeight + PORTLET_PADDING, PORTLET_MIN_HEIGHT);
+      portletApi.resize({ height });
+    } catch (error) {
+      console.warn('portlet.resize failed', error);
+    }
+  });
+}
+
+function setResultsTitle(text) {
+  const titleElement = document.getElementById('results-title');
+  if (titleElement) {
+    titleElement.textContent = text;
+  }
+  schedulePortletResize();
+}
 
 const CustomHeaderFilters = {
   DATE_RANGE: { //https://stackoverflow.com/questions/64257406/tabulator-filter-by-date-range-from-to-in-header
@@ -96,16 +142,16 @@ function pollForData(statusUrl, params, intervalMs = 2000, maxTries = 300) {
     let { taskId, requestGuid } = params;
 
     const timer = setInterval(() => {
-      document.getElementById('results-title').textContent = 'Results - ⏳ Loading...';   // Loading
+      setResultsTitle('Results - ⏳ Loading...');   // Loading
 
       console.log('pollForData() polling...', { tries, taskId, requestGuid });
       makeRequest('POST', `${statusUrl}&taskId=${taskId ? taskId : ''}&requestGuid=${requestGuid}`)
         .then(response => {
-          response = JSON.parse(response);
           console.log('pollForData() response', response);
+          response = JSON.parse(response);
           const status = (response.status || '').toUpperCase();
           if (status === 'COMPLETE' || status === 'SUCCEEDED') {
-            document.getElementById('results-title').textContent = 'Results - ✅ Success!';        // success
+            setResultsTitle('Results - ✅ Success!');        // success
             clearInterval(timer);
             if (response.data) {
               console.log('pollForData() completed with data length', response.data?.length);
@@ -118,15 +164,15 @@ function pollForData(statusUrl, params, intervalMs = 2000, maxTries = 300) {
               resolve([]);
             }
           } else if (status === 'FAILED') {
-            document.getElementById('results-title').textContent = 'Results - ❌ Failed';
+            setResultsTitle('Results - ❌ Failed');
             clearInterval(timer);
             reject(new Error('Task failed'));
           } else if (++tries >= maxTries) {
             clearInterval(timer);
-            document.getElementById('results-title').textContent = 'Results - ❌ ⏱️ Timeout ';
+            setResultsTitle('Results - ❌ ⏱️ Timeout ');
             reject(new Error('Timeout while waiting for data'));
           } else {
-            document.getElementById('results-title').textContent = 'Results - ⏳ Loading...';   // Loading
+            setResultsTitle('Results - ⏳ Loading...');   // Loading
             taskId = response.taskId; //update taskId for next poll
           }
         })
@@ -199,11 +245,13 @@ async function setupDocumentReady() {
       } else {
         console.log('No custom definitions found, using default.');
       }
+      schedulePortletResize();
     });
   });
+
 }
 
-function getCustomColumnDefinitions(definitions) {
+function getCustomColumnDefinitions() {
   return makeRequest('POST', getUrl({ action: 'GET_REPORT_COLUMNS', reportId: currentReportId }))
     .then((response) => {
       const customDefinitions = JSON.parse(response || '[]');
@@ -212,14 +260,14 @@ function getCustomColumnDefinitions(definitions) {
     })
     .catch((error) => {
       console.error('Error fetching column definitions:', error);
-      resultsTable.setColumns(definitions);
+      return [];
     });
 }
 
 function getUrl(parameters = {}) {
   const currentUrl = new URL(window.location.href);
 
-  const newUrl = new URL(currentUrl.origin + currentUrl.pathname);
+  const newUrl = new URL(currentUrl.origin + BASE_URL);
 
   const params = currentUrl.searchParams;
   ['script', 'deploy'].forEach(key => {
