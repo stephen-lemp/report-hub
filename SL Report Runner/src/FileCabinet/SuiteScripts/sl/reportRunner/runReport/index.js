@@ -43,9 +43,9 @@ function schedulePortletResize() {
     portletResizePending = false;
     try {
       const height = Math.max(document.body.scrollHeight + PORTLET_PADDING, PORTLET_MIN_HEIGHT);
-      portletApi.resize({ height });
+      if (portletApi) portletApi.resize({ height });
     } catch (error) {
-      console.warn('portlet.resize failed', error);
+      //console.warn('portlet.resize failed', error);
     }
   });
 }
@@ -73,6 +73,22 @@ const CustomHeaderFilters = {
 
       start.value = cell.getValue();
 
+
+      end = start.cloneNode();
+
+      start.addEventListener("change", buildValues);
+      start.addEventListener("blur", buildValues);
+      start.addEventListener("keydown", keypress);
+
+      end.addEventListener("change", buildValues);
+      end.addEventListener("blur", buildValues);
+      end.addEventListener("keydown", keypress);
+
+
+      container.appendChild(start);
+      container.appendChild(end);
+
+
       function buildValues() {
         console.log('buildValues', start.value, end.value);
         success({
@@ -90,20 +106,6 @@ const CustomHeaderFilters = {
           cancel();
         }
       }
-
-      end = start.cloneNode();
-
-      start.addEventListener("change", buildValues);
-      start.addEventListener("blur", buildValues);
-      start.addEventListener("keydown", keypress);
-
-      end.addEventListener("change", buildValues);
-      end.addEventListener("blur", buildValues);
-      end.addEventListener("keydown", keypress);
-
-
-      container.appendChild(start);
-      container.appendChild(end);
 
       return container;
     },
@@ -232,11 +234,14 @@ async function setupDocumentReady() {
       if (customDefinitions && customDefinitions.length > 0) {
         const mergedDefinitions = resultsTable.getColumnDefinitions().map((defaultCol) => {
           const customCol = customDefinitions.find(col => col.field === defaultCol.field);
-          if (customCol && customCol.headerFilter && CustomHeaderFilters[customCol.headerFilter]) {
-            const headerFilterKey = customCol.headerFilter;
-            console.log('Applying Custom Header Filter:' + headerFilterKey, CustomHeaderFilters[headerFilterKey]);
-            customCol.headerFilter = CustomHeaderFilters[headerFilterKey].editor;
-            customCol.headerFilterFunc = CustomHeaderFilters[headerFilterKey].filterFunction;
+          if (customCol) {
+            // Apply header filter options
+            if (customCol.headerFilter && CustomHeaderFilters[customCol.headerFilter]) {
+              const headerFilterKey = customCol.headerFilter;
+              customCol.headerFilter = CustomHeaderFilters[headerFilterKey].editor;
+              customCol.headerFilterFunc = CustomHeaderFilters[headerFilterKey].filterFunction;
+              customCol.headerFilterLiveFilter = false;
+            }
           }
           return customCol ? { ...defaultCol, ...customCol } : defaultCol;
         });
@@ -323,4 +328,9 @@ function initializeDownloadButton() {
       .replaceAll(':', '_')}.csv` : 'report.csv';
     resultsTable.download('csv', filename);
   });
+}
+
+
+function getTable() {
+  return Tabulator.findTable('#results-table')[0];
 }
