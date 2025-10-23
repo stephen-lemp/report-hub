@@ -113,12 +113,12 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
       const reportOptions = search.lookupFields({
         type: 'customrecord_sl_reportrunnerconfig',
         id: reportId,
-        columns: ['custrecord_slrr_suiteqlquery', 'custrecord_slrr_savedsearch', 'custrecord_slrr_usequickrun']
+        columns: ['custrecord_slrr_suiteqlquery', 'custrecord_slrr_savedsearch', 'custrecord_slrrc_savedsearchid', 'custrecord_slrr_usequickrun']
       });
       log.debug('getReportData() reportOptions', reportOptions);
       const isQuickRunReport = reportOptions.custrecord_slrr_usequickrun;
       const queryText = reportOptions.custrecord_slrr_suiteqlquery;
-      const savedSearchId = reportOptions.custrecord_slrr_savedsearch[0]?.value;
+      const savedSearchId = reportOptions.custrecord_slrr_savedsearch[0]?.value || reportOptions.custrecord_slrrc_savedsearchid;
       if (isQuickRunReport) {
         const results = queryText ?
           query.runSuiteQL({ query: queryText }).asMappedResults() :
@@ -240,7 +240,7 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
       columns: ['name']
     });
 
-    const form = serverWidget.createForm({ title: reportOptions.name, hideNavBar: true });
+    const form = serverWidget.createForm({ title: reportOptions.name, hideNavBar: false });
     // add html with reference script/css links
     const style = `<style>${file.load({ id: '/SuiteScripts/sl/reportRunner/display/index.css' }).getContents()}</style>`;
     const script = `<script>${file.load({ id: '/SuiteScripts/sl/reportRunner/display/index.js' }).getContents()}</script>`;
