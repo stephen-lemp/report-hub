@@ -1,33 +1,20 @@
 # Report Runner
 
-Report Runner is a SuiteCloud Development Framework (SDF) project that delivers a configurable Suitelet for running and visualising NetSuite reports. Each report is defined by a custom record that allows you to wire up Saved Searches or SuiteQL, configure filters, render charts, and export results.
+Report Runner is a SuiteCloud Development Framework (SDF) project that delivers a configurable Suitelet for running and visualising NetSuite reports. Each report is defined by a custom record that allows you to wire up Saved Searches or SuiteQL, configure filters, and export results.
 
 ## Features
 
-- **Configurable Suitelet** – Deploy the included Suitelet and pass a report configuration id to render interactive reports.
-- **Flexible Data Sources** – Run reports backed by either Saved Searches or SuiteQL statements.
-- **Dynamic Filters** – Describe the filters you want to expose using JSON, and they will render on the Suitelet automatically with server-side filtering.
-- **Charting Support** – Built-in Chart.js integration to display bar, line, pie, or doughnut visualisations.
-- **Downloadable Data** – One-click CSV export that respects your current filters.
+- **Fast Big Query Execution** - Suitelet utilizes NetSuites `N/task` module to run suiteQL queries with lightning speed.
+- **Report Listing Page** - Display list of all reports published to your role with one-click access.
+- **Saved Search AND SuiteQL Reports** – Provides single location for users to run all Saved Search and SuiteQL reports.
+- **Downloadable Data** – One-click CSV export.
 - **In-app Documentation** – Record-level help text documents how to configure the solution from inside NetSuite.
 
 ## Project Structure
 
-```
-FileCabinet/
-  SuiteScripts/
-    ReportRunner/
-      report_suitelet.js           # Suitelet implementation
-      report_suitelet_client.js    # Client script for front-end controls
-Objects/
-  customlist_customlist_rr_charttype.xml   # Chart type list values
-  customlist_customlist_rr_datasource.xml  # Data source list values
-  customrecordtype_customrecord_rr_report.xml # Report configuration custom record type
-  script_custscript_rr_report_suitelet.xml     # Suitelet script definition
-  scriptdeployment_customdeploy_rr_report_suitelet.xml # Default deployment
-manifest.xml
-deploy.xml
-```
+- **Report Runner - Main** - Suitelet deployment added under Lists > Search to allow users to find list of reports published to their role.
+- **Report Runner Config** - Custom Record to configure and publish reports.
+- **Report Runner Column** - Custom Record to specify column information such as formatting and filtering.
 
 ## Getting Started
 
@@ -40,67 +27,56 @@ deploy.xml
 
 Each report record supports the following key fields:
 
-| Field | Purpose |
-| --- | --- |
-| **Data Source** | Choose between Saved Search or SuiteQL. |
-| **Saved Search** | Reference the saved search to execute when using the Saved Search data source. |
-| **SuiteQL** | Provide the SuiteQL text. Use `?` placeholders for parameters supplied by filters. |
-| **Chart Type** | Select a visualisation or "None" to omit charts. |
-| **Chart Label Field** | Name of the field in the result set to use for chart labels. |
-| **Chart Value Field** | Name of the numeric field used for chart values. |
-| **Filter Configuration** | JSON array describing filters rendered on the Suitelet. |
+| Field                | Purpose                                                                                                                                                                                      |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Saved Search**     | Reference the saved search to execute when using the Saved Search data source.                                                                                                               |
+| **SuiteQL**          | Provide the SuiteQL text.                                                                                                                                                                    |
+| **Small Report**     | Indicates this is a small report that can be run without the help of a background thread. This implies maximium 4000 results for saved searches and maximum 5000 results for SuiteQL queries |
+| **Category**         | The category this search should appear under in the main reports listing.                                                                                                                    |
+| **Available To**     | List of roles that this report is published to.                                                                                                                                              |
+| **Available To All** | Checkbox indicating all roles have access to this report                                                                                                                                     |
 
-### Filter Configuration JSON
+### Report Runner Columns
 
-Define each filter as an object in the JSON array. Supported properties:
+*Report Runner Columns* allow you to override certain things about a report column.
 
-- `id` (string) – Identifier used to reference the filter value.
-- `label` (string) – Display label on the form.
-- `type` (string) – `text`, `select`, `date`, `checkbox`, `float`, or `integer`.
-- `operator` (string, optional) – NetSuite search operator (e.g. `ONORAFTER`, `ANYOF`). Defaults to `CONTAINS` for text and `ANYOF` for select filters.
-- `searchField` (string, optional) – Saved search field id used when applying the filter.
-- `source` (array, optional) – For select filters, provide option objects `{ value, text }`.
-- `suiteqlParamIndex` (number, optional) – Zero-based index of the parameter position for SuiteQL queries.
+| Field                        | Purpose                                                                       |
+| ---------------------------- | ----------------------------------------------------------------------------- |
+| Id                           | Identifies column of query or search result this column definition applies to |
+| Title                        | Override the title of this column                                             |
+| Header Filter                | Apply a header filter so users can filter by this column                      |
+| Header Filter Options (JSON) | JSON options to pass the header filter                                        |
+| Formatter                    | Provides a hint about how to format this column                               |
 
-**Example**
-
-```json
-[
-  {
-    "id": "trandate_from",
-    "label": "Start Date",
-    "type": "date",
-    "operator": "ONORAFTER",
-    "searchField": "trandate",
-    "suiteqlParamIndex": 0
-  },
-  {
-    "id": "status",
-    "label": "Status",
-    "type": "select",
-    "operator": "ANYOF",
-    "searchField": "status",
-    "source": [
-      { "value": "SalesOrd:A", "text": "Pending Approval" },
-      { "value": "SalesOrd:B", "text": "Pending Fulfillment" }
-    ]
-  }
-]
-```
-
-## Chart Rendering
-
-Charts are powered by [Chart.js](https://www.chartjs.org/) via CDN. Ensure the target roles have access to external script loading, or host the library locally if your security policy requires it.
+- For information on Header Filter options, see Tabulator [Header Filter](https://tabulator.info/docs/6.3/filter#header) documentation.
+  - Common options provided by Tabulator are:
+    - input
+    - date
+    - list
+  - Custom Options available are:
+    - DATE_RANGE
+- For information on Formatter options, see Tabulator [Builtin Formatters](https://tabulator.info/docs/6.3/format#format-builtin)
+  - Common options provided by Tabulator are:
+    - money
+    - html
+    - link
+    - tickCross
+    - toggle
+    - rownum
 
 ## Downloading Results
 
-The Suitelet renders a **Download CSV** button that submits the form with the current filters and returns a CSV file containing the first 2,000 rows from the data set.
+The Suitelet renders a **Download CSV** button that submits the form with the current filters and returns a CSV file containing all rows from the dataset
 
 ## Extending the Solution
 
 - Add additional custom lists or checkboxes to the record type to capture more metadata.
 - Build role-specific deployments of the Suitelet by copying and editing the deployment object.
 - Swap the Chart.js CDN for an on-account hosted version by updating `CHART_JS_CDN` in `report_suitelet.js`.
+
+## Upcoming Features
+
+Checkout the list of planned enhancements and bug fixes in the [GitHub Issue Tracker](https://github.com/stephen-lemp/report-runner/issues?q=is%3Aissue%20state%3Aopen%20label%3Aplanned)
 
 ## Support
 
