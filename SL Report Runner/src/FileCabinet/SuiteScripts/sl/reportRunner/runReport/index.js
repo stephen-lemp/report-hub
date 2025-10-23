@@ -1,4 +1,6 @@
 
+const BASE_URL = `/app/site/hosting/scriptlet.nl?script=customscript_slreportrunner&deploy=customdeploy_slreportrunner`;
+
 let resultsTable = null;
 let currentReportId = null;
 
@@ -101,8 +103,8 @@ function pollForData(statusUrl, params, intervalMs = 2000, maxTries = 300) {
       console.log('pollForData() polling...', { tries, taskId, requestGuid });
       makeRequest('POST', `${statusUrl}&taskId=${taskId ? taskId : ''}&requestGuid=${requestGuid}`)
         .then(response => {
-          response = JSON.parse(response);
           console.log('pollForData() response', response);
+          response = JSON.parse(response);
           const status = (response.status || '').toUpperCase();
           if (status === 'COMPLETE' || status === 'SUCCEEDED') {
             document.getElementById('results-title').textContent = 'Results - ✅ Success!';        // success
@@ -219,7 +221,7 @@ function getCustomColumnDefinitions(definitions) {
 function getUrl(parameters = {}) {
   const currentUrl = new URL(window.location.href);
 
-  const newUrl = new URL(currentUrl.origin + currentUrl.pathname);
+  const newUrl = new URL(currentUrl.origin + BASE_URL);
 
   const params = currentUrl.searchParams;
   ['script', 'deploy'].forEach(key => {
