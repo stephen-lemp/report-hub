@@ -3,7 +3,7 @@
  * @NScriptType ClientScript
  * @author Stephen Lemp <sl@stephenlemp.com>
  */
-define(['N/query', 'N/currentRecord', 'N/search'], (query, currentRecord, search) => {
+define(['N/query', 'N/runtime', 'N/search'], (query, runtime, search) => {
 
   function pageInit() {
     renderReportsListing(getReportDefinitions());
@@ -15,7 +15,11 @@ define(['N/query', 'N/currentRecord', 'N/search'], (query, currentRecord, search
 
   function getReportDefinitions() {
     return query.runSuiteQL({
-      query: `select id, name, custrecord_slrrc_category from 	customrecord_sl_reportrunnerconfig where isinactive = 'F'`
+      query: `select id, name, custrecord_slrrc_category from 	customrecord_sl_reportrunnerconfig where isinactive = 'F' AND  CASE 
+        WHEN BUILTIN.MNFILTER(custrecord_slrrc_availableto, 'MN_INCLUDE', '', 'TRUE', ?) = 'TRUE' THEN 'T' 
+        WHEN NVL(custrecord_slrrc_availabletoall,'F') = 'T' THEN 'T'
+        ELSE 'F' END = 'T'`,
+      params: [runtime.getCurrentUser().role]
     }).asMappedResults();
   }
 

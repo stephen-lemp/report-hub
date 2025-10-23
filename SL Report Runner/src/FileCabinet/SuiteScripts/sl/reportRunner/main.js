@@ -6,25 +6,34 @@
  */
 define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/task', 'N/runtime'], function (serverWidget, search, config, file, query, task, runtime) {
 
+  const ActionRouter = {
+    DELETE_FILE: (context) => {
+      file.delete(getFileIdFromName(`${context.request.parameters.requestGuid}.csv`));
+      log.debug('deleted file', { requestGuid: context.request.parameters.requestGuid });
+    },
+    GET_REPORT_DATA: (context) => {
+      const reportId = context.request.parameters.reportId;
+      log.debug({ title: 'Generating Report Data', details: `Report ID: ${reportId}` });
+      context.response.setHeader({ name: 'Content-Type', value: 'application/json' });
+      context.response.write(JSON.stringify(getReportData(context.request.parameters)));
+    },
+    GET_REPORT_COLUMNS: (context) => {
+      const reportId = context.request.parameters.reportId;
+      context.response.setHeader({ name: 'Content-Type', value: 'application/json' });
+      context.response.write(getReportColumnDefinitionsById(reportId) || '[]');
+    }
+  };
+
   function onRequest(context) {
     try {
       if (context.request.method === 'POST') {
-        log.debug({ title: 'POST Request', details: context.request });
+        log.debug({ title: 'POST Request', details: context.request.parameters });
         const action = context.request.parameters.action;
-        if (action === 'DELETE_FILE') {
-          file.delete(getFileIdFromName(`${context.request.parameters.requestGuid}.csv`));
-          log.debug('deleted file', { requestGuid: context.request.parameters.requestGuid });
-        } else if (action === 'GET_REPORT_DATA') {
-          const reportId = context.request.parameters.reportId;
-          log.debug({ title: 'Generating Report Data', details: `Report ID: ${reportId}` });
-          context.response.setHeader({ name: 'Content-Type', value: 'application/json' });
-          context.response.write(JSON.stringify(getReportData(context.request.parameters)));
-        } else if (action === 'GET_REPORT_COLUMNS') {
-          const reportId = context.request.parameters.reportId;
-          context.response.setHeader({ name: 'Content-Type', value: 'application/json' });
-          context.response.write(getReportColumnDefinitionsById(reportId) || '[]');
-        } else {
-          context.response.write(JSON.stringify({ success: false, message: 'Unknown action' }));
+        if (action) {
+          ActionRouter[action] ?
+            ActionRouter[action](context) :
+            context.response.write(JSON.stringify({ success: false, message: 'Unknown action' }));
+          return;
         }
       } else {
         const reportId = context.request.parameters.reportId;
@@ -63,9 +72,29 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
   }
 
 
+  function authorizeRequest(reportId) {
+    const userRoleId = runtime.getCurrentUser().role;
+    return query.runSuiteQL({
+      query: `
+      select id, CASE 
+        WHEN BUILTIN.MNFILTER(custrecord_slrrc_availableto, 'MN_INCLUDE', '', 'TRUE', ?) = 'TRUE' THEN 'T' 
+        WHEN NVL(custrecord_slrrc_availabletoall,'F') = 'T' THEN 'T'
+        ELSE 'F' END authorized
+        from customrecord_sl_reportrunnerconfig
+      where id = ?`,
+      params: [userRoleId, reportId]
+    }).asMappedResults()[0]?.authorized === 'T';
+
+  }
+
+
   function getReportData(options) {
     const { reportId, requestGuid, taskId } = options;
     log.debug('getReportData() called with', options);
+    const requestAuthorization = authorizeRequest(reportId);
+    if (!requestAuthorization) {
+      return { status: 'FAILED', message: 'User Role not Authorized to View this Report', requestGuid };
+    }
 
     //custrecord_slrr_usequickrun
     if (taskId) { // polling for existing task
