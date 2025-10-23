@@ -76,12 +76,6 @@ The Luxon date library is pre-loaded, so you can do things like sort by date
 
 The Suitelet renders a **Download CSV** button that submits the form with the current filters and returns a CSV file containing all rows from the dataset
 
-## Extending the Solution
-
-- Add additional custom lists or checkboxes to the record type to capture more metadata.
-- Build role-specific deployments of the Suitelet by copying and editing the deployment object.
-- Swap the Chart.js CDN for an on-account hosted version by updating `CHART_JS_CDN` in `report_suitelet.js`.
-
 ## Upcoming Features
 
 Checkout the list of planned enhancements and bug fixes in the [GitHub Issue Tracker](https://github.com/stephen-lemp/report-runner/issues?q=is%3Aissue%20state%3Aopen%20label%3Aplanned)
