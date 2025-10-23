@@ -1,0 +1,215 @@
+<!-- JQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+
+<!-- Bootstrap -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Tabulator -->
+<link href="https://unpkg.com/tabulator-tables@6.3.1/dist/css/tabulator.min.css" rel="stylesheet">
+<script type="text/javascript" src="https://unpkg.com/tabulator-tables@6.3.1/dist/js/tabulator.min.js"></script>
+
+<!-- JQuery UI -->
+<link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css" />
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+
+<!-- select 2 -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<!-- Luxon -->
+<script src="https://cdn.jsdelivr.net/npm/luxon@3.5.0/build/global/luxon.min.js"></script>
+
+<!-- PapaParse -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"
+  integrity="sha512-dfX5uYVXzyU8+KHqj8bjo7UkOdg18PaOtpa48djpNbZHwExddghZ+ZmzWT06R5v6NSk3ZUfsH6FNEDepLx9hPQ=="
+  crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<!-- FontAwesome CSS for Icons -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap CSS -->
+  <style>
+    :root {
+      --fg: #1f2937;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --hover: #f9fafb;
+      --accent: #111827;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      color: var(--fg);
+      margin: 16px;
+    }
+
+    .card {
+      max-width: 920px;
+      margin: 0 auto;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px 18px;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .toolbar input {
+      flex: 1;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+
+    .toolbar button {
+      border: 1px solid var(--border);
+      background: white;
+      padding: 8px 10px;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+
+    .toolbar button:hover {
+      background: var(--hover);
+    }
+
+    .tree {
+      margin-top: 6px;
+    }
+
+    .node {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 8px;
+      border-radius: 10px;
+      user-select: none;
+    }
+
+    .node:hover {
+      background: var(--hover);
+    }
+
+    .twisty {
+      width: 18px;
+      display: inline-flex;
+      justify-content: center;
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .folder {
+      font-weight: 600;
+    }
+
+    .children {
+      margin-left: 22px;
+      display: none;
+    }
+
+    .children.open {
+      display: block;
+    }
+
+    .item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 8px;
+      margin: 2px 0;
+      border-radius: 8px;
+    }
+
+    .item a {
+      text-decoration: none;
+      color: var(--accent);
+    }
+
+    .item a:hover {
+      text-decoration: underline;
+    }
+
+    .item.disabled {
+      color: var(--muted);
+    }
+
+    .download-link {
+      margin-left: 8px;
+      font-size: 12px;
+      text-decoration: none;
+      color: var(--accent);
+    }
+
+    .download-link:hover {
+      text-decoration: underline;
+    }
+
+    .download-link.downloading,
+    .item[aria-busy="true"] .download-link {
+      color: var(--muted);
+      pointer-events: none;
+    }
+
+    .badge {
+      font-size: 11px;
+      color: white;
+      background: #9ca3af;
+      padding: 2px 6px;
+      border-radius: 999px;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .path {
+      color: var(--muted);
+      font-size: 12px;
+      margin-left: auto;
+    }
+
+    .visually-hidden {
+      position: absolute !important;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <div class="toolbar">
+      <input id="search" placeholder="Search reports or categories…" aria-label="Search" />
+      <button id="expandAll" type="button">Expand all</button>
+      <button id="collapseAll" type="button">Collapse all</button>
+    </div>
+    <div id="tree" class="tree" role="tree" aria-label="Report links"></div>
+    <div class="muted" style="margin-top:8px;">Tip: ← collapses, → expands, Enter opens a link.</div>
+  </div>
+
+  <script>
+    // --- Inject your data here (server generates this) ---
+    // e.g., response.write('<script>window.REPORT_LINKS=' + JSON.stringify(data) + '</' + 'script>');
+
+  </script>
+</body>
+
+</html>
