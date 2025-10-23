@@ -157,6 +157,7 @@ function setupPage() {
     row.className = "item";
     row.setAttribute("role", "treeitem");
     row.tabIndex = 0;
+    row.dataset.reportId = item.id;
 
     const icon = document.createElement("span");
     icon.textContent = item.external_report_link ? "📄" : "🧾";
@@ -167,10 +168,26 @@ function setupPage() {
     pathSpan.textContent = folder.path.join(" / ");
 
     const a = document.createElement("a");
-    a.href = item.external_report_link ? item.external_report_link : `${location.href}&action=GET_REPORT_DATA&reportId=${item.id}`;
-    a.target = "_blank";
-    a.rel = "noopener";
     a.textContent = item.name || "(untitled)";
+    if (item.external_report_link) {
+      a.href = item.external_report_link;
+      a.target = "_blank";
+      a.rel = "noopener";
+    } else {
+      a.href = getUrl({ reportId: item.id });
+      a.target = "_blank";
+      a.rel = "noopener";
+    }
+
+    const downloadLink = document.createElement("a");
+    downloadLink.href = "#";
+    downloadLink.className = "download-link";
+    downloadLink.textContent = "Download CSV";
+    downloadLink.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      initiateReportDownload(item, row, downloadLink);
+    });
 
     row.addEventListener("keydown", (e) => {
       if (e.key === "Enter") a.click();
@@ -180,6 +197,7 @@ function setupPage() {
 
     row.appendChild(icon);
     row.appendChild(a);
+    row.appendChild(downloadLink);
     row.appendChild(pathSpan);
     return row;
   }
@@ -283,4 +301,204 @@ function setupPage() {
     expanded.add(child.path.join("/"));
   }
   render(root);
+
+  async function initiateReportDownload(item, row, linkEl) {
+    if (row.dataset.downloading === "true") {
+      return;
+    }
+
+    if (typeof Papa === "undefined") {
+      console.error("PapaParse is required to generate CSV output");
+      window.alert("CSV download is unavailable because PapaParse is missing.");
+      return;
+    }
+
+    row.dataset.downloading = "true";
+    row.setAttribute("aria-busy", "true");
+
+    const originalText = linkEl.textContent;
+    const originalHref = linkEl.getAttribute("href");
+    linkEl.classList.add("downloading");
+    linkEl.textContent = "Downloading…";
+    linkEl.setAttribute("aria-disabled", "true");
+    linkEl.setAttribute("tabindex", "-1");
+
+    const requestGuid = `${window.runtime.getCurrentUser().id}-${Date.now()}-${item.id}`;
+
+    try {
+      const data = await retrieveReportData(item.id, requestGuid);
+      const csvText = buildCsv(data);
+      const fileName = `${sanitizeFileName(item.name || "report")}-${new Date()
+        .toISOString()
+        .replace(/[:T]/g, "-")
+        .split(".")[0]}.csv`;
+      triggerCsvDownload(csvText, fileName);
+    } catch (error) {
+      console.error("Failed to download report", { error, item });
+      window.alert(error?.message || "Unable to download report. Try again or contact an administrator.");
+    } finally {
+      row.dataset.downloading = "false";
+      row.removeAttribute("aria-busy");
+      linkEl.classList.remove("downloading");
+      linkEl.textContent = originalText;
+      linkEl.setAttribute("href", originalHref);
+      linkEl.removeAttribute("aria-disabled");
+      linkEl.removeAttribute("tabindex");
+    }
+  }
+}
+
+async function retrieveReportData(reportId, requestGuid) {
+  const statusUrl = getUrl({ action: "GET_REPORT_DATA", reportId, requestGuid });
+  const initialResponse = await makeRequest("POST", statusUrl);
+  const parsed = JSON.parse(initialResponse || "{}");
+  return resolveReportResponse(parsed, statusUrl, requestGuid);
+}
+
+async function resolveReportResponse(response, statusUrl, requestGuid) {
+  const status = (response.status || "").toUpperCase();
+
+  if (Array.isArray(response.data)) {
+    return response.data;
+  }
+
+  if (response.dataLink) {
+    return getDataFromLink(response.dataLink, requestGuid);
+  }
+
+  if (status === "COMPLETE" || status === "SUCCEEDED") {
+    if (response.dataLink) {
+      return getDataFromLink(response.dataLink, requestGuid);
+    }
+    if (Array.isArray(response.data)) {
+      return response.data;
+    }
+    return [];
+  }
+
+  if (status === "FAILED") {
+    throw new Error(response.message || "The report generation task failed.");
+  }
+
+  return pollForData(statusUrl, {
+    taskId: response.taskId,
+    requestGuid: requestGuid || response.requestGuid
+  });
+}
+
+function pollForData(statusUrl, params, intervalMs = 2000, maxTries = 300) {
+  let tries = 0;
+  let { taskId, requestGuid } = params || {};
+
+  return new Promise((resolve, reject) => {
+    const poll = () => {
+      makeRequest("POST", `${statusUrl}&taskId=${taskId || ""}&requestGuid=${requestGuid || ""}`)
+        .then((text) => {
+          const response = JSON.parse(text || "{}");
+          const status = (response.status || "").toUpperCase();
+
+          if (status === "COMPLETE" || status === "SUCCEEDED") {
+            if (Array.isArray(response.data)) {
+              resolve(response.data);
+            } else if (response.dataLink) {
+              resolve(getDataFromLink(response.dataLink, requestGuid || response.requestGuid));
+            } else {
+              resolve([]);
+            }
+            return;
+          }
+
+          if (status === "FAILED") {
+            reject(new Error(response.message || "The report generation task failed."));
+            return;
+          }
+
+          taskId = response.taskId || taskId;
+          tries += 1;
+          if (tries >= maxTries) {
+            reject(new Error("Timed out while waiting for report data."));
+            return;
+          }
+          setTimeout(poll, intervalMs);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    };
+
+    poll();
+  });
+}
+
+function getDataFromLink(dataLink, requestGuid) {
+  return fetch(`${window.location.origin}${dataLink}`)
+    .then((response) => response.text())
+    .then((csvText) => {
+      const results = Papa.parse(csvText, { header: true, skipEmptyLines: true });
+      makeRequest("POST", getUrl({ action: "DELETE_FILE", requestGuid }));
+      return results.data || [];
+    });
+}
+
+function buildCsv(data) {
+  if (!Array.isArray(data) || data.length === 0) {
+    return "";
+  }
+  return Papa.unparse(data);
+}
+
+function triggerCsvDownload(csvText, filename) {
+  const blob = new Blob([csvText], { type: "text/csv;charset=utf-8;" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(link.href);
+}
+
+function sanitizeFileName(name) {
+  const cleaned = name.replace(/[^a-z0-9-_]+/gi, "_").replace(/_{2,}/g, "_").replace(/^_+|_+$/g, "");
+  return cleaned || "report";
+}
+
+function getUrl(parameters = {}) {
+  const currentUrl = new URL(window.location.href);
+  const newUrl = new URL(currentUrl.origin + currentUrl.pathname);
+  const params = currentUrl.searchParams;
+  ["script", "deploy"].forEach((key) => {
+    const value = params.get(key);
+    if (value) newUrl.searchParams.set(key, value);
+  });
+  Object.keys(parameters || {}).forEach((param) => {
+    if (parameters[param] !== undefined && parameters[param] !== null) {
+      newUrl.searchParams.set(param, parameters[param]);
+    }
+  });
+  return newUrl.toString();
+}
+
+function makeRequest(method, url, body) {
+  return new Promise(function (resolve, reject) {
+    const xhr = new XMLHttpRequest();
+    xhr.open(method, url);
+    xhr.onload = function () {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        resolve(xhr.response);
+      } else {
+        reject({
+          status: xhr.status,
+          statusText: xhr.statusText
+        });
+      }
+    };
+    xhr.onerror = function () {
+      reject({
+        status: xhr.status,
+        statusText: xhr.statusText
+      });
+    };
+    xhr.send(body);
+  });
 }

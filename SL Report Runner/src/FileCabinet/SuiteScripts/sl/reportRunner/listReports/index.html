@@ -144,6 +144,23 @@
       color: var(--muted);
     }
 
+    .download-link {
+      margin-left: 8px;
+      font-size: 12px;
+      text-decoration: none;
+      color: var(--accent);
+    }
+
+    .download-link:hover {
+      text-decoration: underline;
+    }
+
+    .download-link.downloading,
+    .item[aria-busy="true"] .download-link {
+      color: var(--muted);
+      pointer-events: none;
+    }
+
     .badge {
       font-size: 11px;
       color: white;
