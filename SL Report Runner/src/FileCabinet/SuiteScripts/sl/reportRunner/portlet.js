@@ -9,7 +9,6 @@ define(['N/runtime', 'N/file', 'N/ui/serverWidget'], function (runtime, file, se
 
   function renderContent(params) {
     params.portlet.title = 'SL Report Runner';
-    params.portlet.clientScriptModulePath = 'SuiteScripts/sl/reportRunner/portletClient.js';
 
 
     //params.portlet.form = serverWidget.createForm({ title: 'TBD', hideNavBar: true });
