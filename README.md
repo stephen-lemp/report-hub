@@ -83,3 +83,4 @@ Checkout the list of planned enhancements and bug fixes in the [GitHub Issue Tra
 ## Support
 
 Create issues or pull requests in this repository if you discover bugs or have enhancement ideas.
+
