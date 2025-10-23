@@ -169,6 +169,7 @@ function setupPage() {
 
     const a = document.createElement("a");
     a.textContent = item.name || "(untitled)";
+    let downloadLink = null;
     if (item.external_report_link) {
       a.href = item.external_report_link;
       a.target = "_blank";
@@ -177,7 +178,7 @@ function setupPage() {
       a.href = getUrl({ reportId: item.id });
       a.target = "_blank";
       a.rel = "noopener";
-      const downloadLink = document.createElement("a");
+      downloadLink = document.createElement("a");
       downloadLink.href = "#";
       downloadLink.className = "download-link";
       downloadLink.textContent = "Download CSV";
@@ -186,7 +187,6 @@ function setupPage() {
         event.stopPropagation();
         initiateReportDownload(item, row, downloadLink);
       });
-      row.appendChild(downloadLink);
     }
 
     row.addEventListener("keydown", (e) => {
@@ -197,6 +197,9 @@ function setupPage() {
 
     row.appendChild(icon);
     row.appendChild(a);
+    if (downloadLink) {
+      row.appendChild(downloadLink);
+    }
     row.appendChild(pathSpan);
     return row;
   }
