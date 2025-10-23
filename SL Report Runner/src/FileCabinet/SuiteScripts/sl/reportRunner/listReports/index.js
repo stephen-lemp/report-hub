@@ -177,17 +177,17 @@ function setupPage() {
       a.href = getUrl({ reportId: item.id });
       a.target = "_blank";
       a.rel = "noopener";
+      const downloadLink = document.createElement("a");
+      downloadLink.href = "#";
+      downloadLink.className = "download-link";
+      downloadLink.textContent = "Download CSV";
+      downloadLink.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        initiateReportDownload(item, row, downloadLink);
+      });
+      row.appendChild(downloadLink);
     }
-
-    const downloadLink = document.createElement("a");
-    downloadLink.href = "#";
-    downloadLink.className = "download-link";
-    downloadLink.textContent = "Download CSV";
-    downloadLink.addEventListener("click", (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      initiateReportDownload(item, row, downloadLink);
-    });
 
     row.addEventListener("keydown", (e) => {
       if (e.key === "Enter") a.click();
@@ -197,7 +197,6 @@ function setupPage() {
 
     row.appendChild(icon);
     row.appendChild(a);
-    row.appendChild(downloadLink);
     row.appendChild(pathSpan);
     return row;
   }
