@@ -4,15 +4,26 @@
  * @description Displays Report Runner output inside a dashboard portlet.
  */
 
-define(['N/runtime', 'N/file', 'N/ui/serverWidget'], function (runtime, file, serverWidget) {
+define(['N/runtime', 'N/file', 'N/ui/serverWidget', 'N/search'], function (runtime, file, serverWidget, search) {
 
 
   function renderContent(params) {
-    params.portlet.title = 'SL Report Runner';
+    const reportId = runtime.getCurrentScript().getParameter({ name: 'custscript_slrr_portlet_reportid' });
+    if (!reportId) {
+      params.portlet.html = [
+        '<div class="slrr-portlet-message" style="font-size:12px;line-height:1.4;">',
+        '<p style="margin:0;">No report selected. Edit the portlet preferences to choose a report.</p>',
+        '</div>'
+      ].join('');
+      return;
+    }
 
+    params.portlet.title = search.lookupFields({
+      type: 'customrecord_sl_reportrunnerconfig',
+      id: reportId,
+      columns: ['name']
+    }).name;
 
-    //params.portlet.form = serverWidget.createForm({ title: 'TBD', hideNavBar: true });
-    // add html with reference script/css links
     const style = `<style>${file.load({ id: '/SuiteScripts/sl/reportRunner/runReport/index.css' }).getContents()}</style>`;
     const script = `<script>${file.load({ id: '/SuiteScripts/sl/reportRunner/runReport/index.js' }).getContents()}</script>`;
     const body = `<body>${file.load({ id: '/SuiteScripts/sl/reportRunner/runReport/index.html' }).getContents()}</body>`;
@@ -23,7 +34,6 @@ define(['N/runtime', 'N/file', 'N/ui/serverWidget'], function (runtime, file, se
       label: 'Report Output'
     }).defaultValue = `${style}${script}${body}`;
 
-    const reportId = runtime.getCurrentScript().getParameter({ name: 'custscript_slrr_portlet_reportid' });
     params.portlet.addField({
       id: 'custpage_reportid',
       type: serverWidget.FieldType.TEXT,
@@ -31,17 +41,6 @@ define(['N/runtime', 'N/file', 'N/ui/serverWidget'], function (runtime, file, se
     })
       .updateDisplayType({ displayType: serverWidget.FieldDisplayType.HIDDEN })
       .defaultValue = reportId;
-
-
-
-    if (!reportId) {
-      params.portlet.html = [
-        '<div class="slrr-portlet-message" style="font-size:12px;line-height:1.4;">',
-        '<p style="margin:0;">No report selected. Edit the portlet preferences to choose a report.</p>',
-        '</div>'
-      ].join('');
-      return;
-    }
   }
 
   return {
