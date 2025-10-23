@@ -47,6 +47,13 @@ Each report record supports the following key fields:
 | Header Filter                | Apply a header filter so users can filter by this column                      |
 | Header Filter Options (JSON) | JSON options to pass the header filter                                        |
 | Formatter                    | Provides a hint about how to format this column                               |
+| Formatter Params             |                                                                               |
+| Sorter                       |                                                                               |
+| Sorter Params                |                                                                               |
+
+Params are expected as JSON objects. You might find this tool useful to get valid JSON: https://transform.tools/js-object-to-json
+
+The Luxon date library is pre-loaded, so you can do things like sort by date
 
 - For information on Header Filter options, see Tabulator [Header Filter](https://tabulator.info/docs/6.3/filter#header) documentation.
   - Common options provided by Tabulator are:
@@ -63,6 +70,7 @@ Each report record supports the following key fields:
     - tickCross
     - toggle
     - rownum
+- For information on Sorter options see Tabulator [Sorting Data](https://tabulator.info/docs/6.3/sort)
 
 ## Downloading Results
 

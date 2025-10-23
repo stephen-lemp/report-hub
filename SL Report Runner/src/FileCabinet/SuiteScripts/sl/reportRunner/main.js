@@ -52,18 +52,21 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
     log.debug({ title: 'getReportColumnDefinitionsById', details: `Report ID: ${reportId}` });
     const results = [];
     query.runSuiteQL({
-      query: `SELECT  custrecord_slrrc_id field,  custrecord_slrrc_title title,  custrecord_slrrc_headerfilter headerfilter,  custrecord_slrrc_formatter formatter, custrecord_slrrc_headerfilteroptions headerfilteroptions 
+      query: `SELECT  custrecord_slrrc_id field,  custrecord_slrrc_title title,  custrecord_slrrc_headerfilter headerfilter,  custrecord_slrrc_headerfilterparams headerfilterparams, custrecord_slrrc_formatter formatter, custrecord_slrrc_formatterparams formatterparams, custrecord_slrrc_sorter sorter, 	custrecord_slrrc_sorterparams sorterparams
               FROM customrecord_slrr_columns 
               WHERE custrecord_slrrc_configlink = ?`,
       params: [reportId]
     }).asMappedResults().forEach(result => {
       results.push(
         {
-          formatter: result.formatter,
           field: result.field,
           title: result.title,
           headerFilter: result.headerfilter,
-          headerFilterOptions: result.headerfilteroptions ? JSON.parse(result.headerfilteroptions) : undefined
+          headerFilterParams: result.headerfilterparams ? JSON.parse(result.headerfilterparams) : undefined,
+          formatter: result.formatter,
+          formatterParams: result.formatterparams ? JSON.parse(result.formatterparams) : null,
+          sorter: result.sorter,
+          sorterParams: result.sorterparams ? JSON.parse(result.sorterparams) : null,
         });
       return result.custrecord_slrr_column_definitions || '[]';
     });
