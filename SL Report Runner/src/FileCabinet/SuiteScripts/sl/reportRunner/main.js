@@ -221,13 +221,16 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
   function generateMainPage(context) {
     const form = serverWidget.createForm({ title: 'SL Report Runner' });
 
+    const style = `<style>${file.load({ id: '/SuiteScripts/sl/reportRunner/runReport/index.css' }).getContents()}</style>`;
+    const script = `<script>${file.load({ id: '/SuiteScripts/sl/reportRunner/runReport/index.js' }).getContents()}</script>`;
+    const body = `<body>${file.load({ id: '/SuiteScripts/sl/reportRunner/runReport/index.html' }).getContents()}</body>`;
+
     form.addField({
       id: 'custpage_reportslisting',
       type: serverWidget.FieldType.INLINEHTML,
-      label: 'Reports Listing'
-    }).defaultValue = `<div id="reports-container"></div>`;
+      label: 'Report Listing'
+    }).defaultValue = `${style}${script}${body}`;
 
-    form.clientScriptModulePath = 'SuiteScripts/sl/reportRunner/client.js';
     context.response.writePage(form);
   }
 
@@ -242,9 +245,9 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
 
     const form = serverWidget.createForm({ title: reportOptions.name, hideNavBar: false });
     // add html with reference script/css links
-    const style = `<style>${file.load({ id: '/SuiteScripts/sl/reportRunner/display/index.css' }).getContents()}</style>`;
-    const script = `<script>${file.load({ id: '/SuiteScripts/sl/reportRunner/display/index.js' }).getContents()}</script>`;
-    const body = `<body>${file.load({ id: '/SuiteScripts/sl/reportRunner/display/index.html' }).getContents()}</body>`;
+    const style = `<style>${file.load({ id: '/SuiteScripts/sl/reportRunner/runReport/index.css' }).getContents()}</style>`;
+    const script = `<script>${file.load({ id: '/SuiteScripts/sl/reportRunner/runReport/index.js' }).getContents()}</script>`;
+    const body = `<body>${file.load({ id: '/SuiteScripts/sl/reportRunner/runReport/index.html' }).getContents()}</body>`;
 
     form.addField({
       id: 'custpage_reportoutput',

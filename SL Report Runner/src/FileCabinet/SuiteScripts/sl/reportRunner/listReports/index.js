@@ -15,7 +15,7 @@ define(['N/query', 'N/runtime', 'N/search'], (query, runtime, search) => {
 
   function getReportDefinitions() {
     return query.runSuiteQL({
-      query: `select id, name, custrecord_slrrc_category from 	customrecord_sl_reportrunnerconfig where isinactive = 'F' AND  CASE 
+      query: `select id, name, custrecord_slrrc_category from 	customrecord_sl_reportrunnerconfig, custrecord_slrrc_externalreportlink external_report_link where isinactive = 'F' AND  CASE 
         WHEN BUILTIN.MNFILTER(custrecord_slrrc_availableto, 'MN_INCLUDE', '', 'TRUE', ?) = 'TRUE' THEN 'T' 
         WHEN NVL(custrecord_slrrc_availabletoall,'F') = 'T' THEN 'T'
         ELSE 'F' END = 'T'`,
