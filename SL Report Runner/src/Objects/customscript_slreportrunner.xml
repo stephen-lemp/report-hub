@@ -8,85 +8,31 @@
   <notifyuser>F</notifyuser>
   <scriptfile>[/SuiteScripts/sl/reportRunner/main.js]</scriptfile>
   <scriptcustomfields>
-    <scriptcustomfield scriptid="custscript_slrr_label">
+    <scriptcustomfield scriptid="custscript_slrr_suitelet_reportconfig">
       <accesslevel>2</accesslevel>
       <applyformatting>F</applyformatting>
       <checkspelling>F</checkspelling>
       <defaultchecked>F</defaultchecked>
       <defaultselection></defaultselection>
       <defaultvalue></defaultvalue>
-      <description></description>
-      <displayheight></displayheight>
-      <displaytype>NORMAL</displaytype>
-      <displaywidth>40</displaywidth>
-      <dynamicdefault></dynamicdefault>
-      <fieldtype>TEXT</fieldtype>
-      <help></help>
-      <isformula>F</isformula>
-      <ismandatory>F</ismandatory>
-      <label>Report Page Label</label>
-      <linktext></linktext>
-      <maxlength></maxlength>
-      <maxvalue></maxvalue>
-      <minvalue></minvalue>
-      <onparentdelete></onparentdelete>
-      <searchlevel>2</searchlevel>
-      <selectrecordtype></selectrecordtype>
-      <setting></setting>
-      <storevalue>T</storevalue>
-    </scriptcustomfield>
-    <scriptcustomfield scriptid="custscript_slrr_shownavbar">
-      <accesslevel>2</accesslevel>
-      <applyformatting>F</applyformatting>
-      <checkspelling>F</checkspelling>
-      <defaultchecked>F</defaultchecked>
-      <defaultselection></defaultselection>
-      <defaultvalue></defaultvalue>
-      <description></description>
+      <description>Select the report to run for this deployment. If blank, page will return a list of all available reports.</description>
       <displayheight></displayheight>
       <displaytype>NORMAL</displaytype>
       <displaywidth></displaywidth>
       <dynamicdefault></dynamicdefault>
-      <fieldtype>CHECKBOX</fieldtype>
-      <help></help>
+      <fieldtype>SELECT</fieldtype>
+      <help>Select the report to run for this deployment. If blank, page will return a list of all available reports.</help>
       <isformula>F</isformula>
       <ismandatory>F</ismandatory>
-      <label>Show Nav Bar</label>
+      <label>Report Config</label>
       <linktext></linktext>
       <maxlength></maxlength>
       <maxvalue></maxvalue>
       <minvalue></minvalue>
-      <onparentdelete></onparentdelete>
+      <onparentdelete>NO_ACTION</onparentdelete>
       <searchlevel>2</searchlevel>
-      <selectrecordtype></selectrecordtype>
+      <selectrecordtype>[scriptid=customrecord_sl_reportrunnerconfig]</selectrecordtype>
       <setting></setting>
-      <storevalue>T</storevalue>
-    </scriptcustomfield>
-    <scriptcustomfield scriptid="custscript_slrr_favoritereports">
-      <accesslevel>2</accesslevel>
-      <applyformatting>F</applyformatting>
-      <checkspelling>F</checkspelling>
-      <defaultchecked>F</defaultchecked>
-      <defaultselection></defaultselection>
-      <defaultvalue></defaultvalue>
-      <description>A comma separated list of internal ids of reports user has marked as favorite.</description>
-      <displayheight></displayheight>
-      <displaytype>NORMAL</displaytype>
-      <displaywidth></displaywidth>
-      <dynamicdefault></dynamicdefault>
-      <fieldtype>CLOBTEXT</fieldtype>
-      <help>A comma separated list of internal ids of reports user has marked as favorite.</help>
-      <isformula>F</isformula>
-      <ismandatory>F</ismandatory>
-      <label>Favorite Reports</label>
-      <linktext></linktext>
-      <maxlength></maxlength>
-      <maxvalue></maxvalue>
-      <minvalue></minvalue>
-      <onparentdelete></onparentdelete>
-      <searchlevel>2</searchlevel>
-      <selectrecordtype></selectrecordtype>
-      <setting>USER</setting>
       <storevalue>T</storevalue>
     </scriptcustomfield>
   </scriptcustomfields>
@@ -96,38 +42,40 @@
       <allpartners>F</allpartners>
       <allroles>F</allroles>
       <audslctrole>ADMINISTRATOR</audslctrole>
-      <custscript_slrr_favoritereports></custscript_slrr_favoritereports>
-      <custscript_slrr_label></custscript_slrr_label>
-      <custscript_slrr_shownavbar>F</custscript_slrr_shownavbar>
+      <custscript_slrr_suitelet_reportconfig></custscript_slrr_suitelet_reportconfig>
       <eventtype></eventtype>
       <isdeployed>T</isdeployed>
       <isonline>F</isonline>
-      <loglevel>DEBUG</loglevel>
+      <loglevel>ERROR</loglevel>
       <runasrole></runasrole>
-      <status>TESTING</status>
+      <status>RELEASED</status>
       <title>SL Report Runner - Main</title>
       <links>
         <link>
           <linkcategory>BASICLISTSSEARCH</linkcategory>
-          <linklabel>Report Runner - Main</linklabel>
+          <linklabel>Report Runner - List</linklabel>
         </link>
       </links>
     </scriptdeployment>
-    <scriptdeployment scriptid="customdeploy_slrr_displayreport">
+    <scriptdeployment scriptid="customdeploy3">
       <allemployees>F</allemployees>
       <allpartners>F</allpartners>
       <allroles>T</allroles>
       <audslctrole></audslctrole>
-      <custscript_slrr_favoritereports></custscript_slrr_favoritereports>
-      <custscript_slrr_label></custscript_slrr_label>
-      <custscript_slrr_shownavbar>F</custscript_slrr_shownavbar>
+      <custscript_slrr_suitelet_reportconfig>[scriptid=customrecord_sl_reportrunnerconfig.val_314124_t1379078_176]</custscript_slrr_suitelet_reportconfig>
       <eventtype></eventtype>
       <isdeployed>T</isdeployed>
       <isonline>F</isonline>
       <loglevel>DEBUG</loglevel>
       <runasrole></runasrole>
       <status>RELEASED</status>
-      <title>SL Report Runner - Display Report</title>
+      <title>Big Data for All</title>
+      <links>
+        <link>
+          <linkcategory>BASICREPORTSCUSTOM</linkcategory>
+          <linklabel>Big Data RR Test</linklabel>
+        </link>
+      </links>
     </scriptdeployment>
   </scriptdeployments>
 </suitelet>
