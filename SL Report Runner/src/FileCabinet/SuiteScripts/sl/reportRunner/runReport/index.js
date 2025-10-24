@@ -220,10 +220,10 @@ function pollForData(statusUrl, params, intervalMs = 2000, maxTries = 300) {
       return `${seconds.toFixed(1)}s`;
     };
     const applyTitle = () => {
-      setResultsTitle(`Results - ⏳ ${statusLabel} (${formatElapsed()})`);
+      setResultsTitle(`⏳ ${statusLabel} (${formatElapsed()})`);
     };
     applyTitle();
-    const titleTimer = setInterval(applyTitle, 200);
+    const titleTimer = setInterval(applyTitle, 100);
 
     const stopTimers = () => {
       if (!timersStopped) {
@@ -246,7 +246,7 @@ function pollForData(statusUrl, params, intervalMs = 2000, maxTries = 300) {
             const finalElapsed = stopTimers();
             lastPollElapsed = finalElapsed;
             pendingTableCompletion = true;
-            setResultsTitle(`Results - ✅ Success - Building Table... (${finalElapsed})`);
+            setResultsTitle(`✅ Success - Building Table... (${finalElapsed})`);
             if (response.data) {
               console.log('pollForData() completed with data length', response.data?.length);
               resolve(response.data || []);
@@ -260,12 +260,12 @@ function pollForData(statusUrl, params, intervalMs = 2000, maxTries = 300) {
           } else if (status === 'FAILED') {
             pendingTableCompletion = false;
             const finalElapsed = stopTimers();
-            setResultsTitle(`Results - ❌ Failed (${finalElapsed})`);
+            setResultsTitle(`❌ Failed (${finalElapsed})`);
             reject(new Error('Task failed'));
           } else if (++tries >= maxTries) {
             pendingTableCompletion = false;
             const finalElapsed = stopTimers();
-            setResultsTitle(`Results - ❌ ⏱️ Timeout (${finalElapsed})`);
+            setResultsTitle(`❌ ⏱️ Timeout (${finalElapsed})`);
             reject(new Error('Timeout while waiting for data'));
           } else {
             if (status === 'PENDING') {
@@ -283,7 +283,7 @@ function pollForData(statusUrl, params, intervalMs = 2000, maxTries = 300) {
         .catch(err => {
           pendingTableCompletion = false;
           const finalElapsed = stopTimers();
-          setResultsTitle(`Results - ❌ Error (${finalElapsed})`);
+          setResultsTitle(`❌ Error (${finalElapsed})`);
           reject(err);
           console.error('pollForData() makeRequest error', err);
         });
@@ -340,7 +340,7 @@ async function setupDocumentReady() {
     if (pendingTableCompletion) {
       pendingTableCompletion = false;
       const elapsed = lastPollElapsed || '0.0s';
-      setResultsTitle(`Results - ✅ Done (${elapsed})`);
+      setResultsTitle(`✅ Done (${elapsed})`);
     }
   });
   schedulePortletResize();
