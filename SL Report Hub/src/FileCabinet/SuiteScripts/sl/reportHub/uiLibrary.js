@@ -5,7 +5,7 @@
 define(['N/search', 'N/file', 'N/ui/serverWidget', 'N/config', 'N/query'], function (search, file, serverWidget, config, query) {
 
   function setupReportListingPage(form) {
-    form.title = 'Report List';
+    form.title = 'Report Hub List';
     const style = `<style>${file.load({ id: '/SuiteScripts/sl/reportHub/listReports/index.css' }).getContents()}</style>`;
     const script = `<script>${file.load({ id: '/SuiteScripts/sl/reportHub/listReports/index.js' }).getContents()}</script>`;
     const body = `<body>${file.load({ id: '/SuiteScripts/sl/reportHub/listReports/index.html' }).getContents()}</body>`;
