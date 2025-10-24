@@ -10,7 +10,7 @@ define(['N/runtime', 'N/file', 'N/ui/serverWidget', 'N/search'], function (runti
   function renderContent(params) {
     const reportId = runtime.getCurrentScript().getParameter({ name: 'custscript_slrr_portlet_reportid' });
     if (!reportId) { renderReportList(params.portlet); }
-    else { renderReportOutput(portlet, reportId); }
+    else { renderReportOutput(params.portlet, reportId); }
   }
 
 
