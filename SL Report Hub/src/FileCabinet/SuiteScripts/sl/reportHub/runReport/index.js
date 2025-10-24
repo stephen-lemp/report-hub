@@ -158,7 +158,7 @@ const CustomColumnFilterDefinitions = {
       start.style.width = "50%";
       start.style.boxSizing = "border-box";
       start.value = cell.getValue();
-
+      start.placeholder = "Min";
 
       function buildValues() {
         console.log('buildValues - number', { start: start.value, end: end.value });
@@ -174,6 +174,7 @@ const CustomColumnFilterDefinitions = {
       }
 
       end = start.cloneNode();
+      end.placeholder = "Max";
 
       start.addEventListener("change", buildValues);
       start.addEventListener("blur", buildValues);
