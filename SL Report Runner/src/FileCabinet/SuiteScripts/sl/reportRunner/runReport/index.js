@@ -55,7 +55,9 @@ function setResultsTitle(text) {
   if (titleElement) {
     titleElement.textContent = text;
   }
-  schedulePortletResize();
+  resultsTable.on('tableBuilt', () => {
+    schedulePortletResize();
+  });
 }
 
 const CustomColumnFilterDefinitions = {
@@ -286,6 +288,11 @@ async function setupDocumentReady() {
       }
     }
   );
+
+  resultsTable.on('tableBuilt', () => {
+    schedulePortletResize();
+  });
+  schedulePortletResize();
 }
 
 function parseCustomColumnDefinitions(columns) {
