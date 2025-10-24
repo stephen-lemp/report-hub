@@ -4,7 +4,7 @@
  * @author Stephen Lemp <sl@stephenlemp.com>
  * @description Main entry point for the Report Runner Suitelet
  */
-define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/task', 'N/runtime'], function (serverWidget, search, config, file, query, task, runtime) {
+define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/task', 'N/runtime', './uiLibrary'], function (serverWidget, search, config, file, query, task, runtime, ui) {
 
   const ActionRouter = {
     DELETE_FILE: (context) => {
@@ -16,11 +16,6 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
       log.debug({ title: 'Generating Report Data', details: `Report ID: ${reportId}` });
       context.response.setHeader({ name: 'Content-Type', value: 'application/json' });
       context.response.write(JSON.stringify(getReportData(context.request.parameters)));
-    },
-    GET_REPORT_COLUMNS: (context) => {
-      const reportId = context.request.parameters.reportId;
-      context.response.setHeader({ name: 'Content-Type', value: 'application/json' });
-      context.response.write(JSON.stringify(getReportColumnDefinitionsById(reportId)) || '[]');
     }
   };
 
@@ -45,17 +40,6 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
       log.error({ title: 'Error in Report Runner Suitelet', details: e });
       context.response.write('An error occurred: ' + e.message);
     }
-  }
-
-
-  function getReportColumnDefinitionsById(reportId) {
-    log.debug({ title: 'getReportColumnDefinitionsById', details: `Report ID: ${reportId}` });
-    return query.runSuiteQL({
-      query: `SELECT  custrecord_slrrc_id field,  custrecord_slrrc_title title, custrecord_slrrc_type type, custrecord_slrrc_allowfiltering allowfiltering
-              FROM customrecord_slrr_columns 
-              WHERE custrecord_slrrc_configlink = ?`,
-      params: [reportId]
-    }).asMappedResults() || [];
   }
 
 
@@ -206,69 +190,15 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
 
 
   function generateMainPage(context) {
-    const form = serverWidget.createForm({ title: 'SL Report Runner' });
-
-    const style = `<style>${file.load({ id: '/SuiteScripts/sl/reportRunner/listReports/index.css' }).getContents()}</style>`;
-    const script = `<script>${file.load({ id: '/SuiteScripts/sl/reportRunner/listReports/index.js' }).getContents()}</script>`;
-    const body = `<body>${file.load({ id: '/SuiteScripts/sl/reportRunner/listReports/index.html' }).getContents()}</body>`;
-
-    form.addField({
-      id: 'custpage_reportslisting',
-      type: serverWidget.FieldType.INLINEHTML,
-      label: 'Report Listing'
-    }).defaultValue = `${style}${script}${body}`;
-
+    const form = serverWidget.createForm();
+    ui.setupReportListingPage(form);
     context.response.writePage(form);
   }
 
 
   function generateReportDisplay(context, reportId) {
-
-    const reportOptions = search.lookupFields({
-      type: 'customrecord_sl_reportrunnerconfig',
-      id: reportId,
-      columns: ['name']
-    });
-
-
-    const form = serverWidget.createForm({ title: reportOptions.name, hideNavBar: false });
-    // add html with reference script/css links
-    const style = `<style>${file.load({ id: '/SuiteScripts/sl/reportRunner/runReport/index.css' }).getContents()}</style>`;
-    const script = `<script>${file.load({ id: '/SuiteScripts/sl/reportRunner/runReport/index.js' }).getContents()}</script>`;
-    const body = `<body>${file.load({ id: '/SuiteScripts/sl/reportRunner/runReport/index.html' }).getContents()}</body>`;
-
-    form.addField({
-      id: 'custpage_reportoutput',
-      type: serverWidget.FieldType.INLINEHTML,
-      label: 'Report Output'
-    }).defaultValue = `${style}${script}${body}`;
-
-    form.addField({
-      id: 'custpage_reportid',
-      type: serverWidget.FieldType.TEXT,
-      label: 'Report ID'
-    })
-      .updateDisplayType({ displayType: serverWidget.FieldDisplayType.HIDDEN })
-      .defaultValue = reportId;
-
-    form.addField({
-      id: 'custpage_columndefinitions',
-      type: serverWidget.FieldType.LONGTEXT,
-      label: 'Columns'
-    })
-      .updateDisplayType({ displayType: serverWidget.FieldDisplayType.HIDDEN })
-      .defaultValue = JSON.stringify(getReportColumnDefinitionsById(reportId));
-
-    form.addField({
-      id: 'custpage_userformattingoptions',
-      type: serverWidget.FieldType.LONGTEXT,
-      label: 'User Formatting Options'
-    })
-      .updateDisplayType({ displayType: serverWidget.FieldDisplayType.HIDDEN })
-      .defaultValue = JSON.stringify({
-        dateFormat: config.load({ type: config.Type.USER_PREFERENCES }).getValue('DATEFORMAT')
-      });
-
+    const form = serverWidget.createForm();
+    ui.setupReportDisplayPage(form, reportId);
     context.response.writePage(form);
   }
 
