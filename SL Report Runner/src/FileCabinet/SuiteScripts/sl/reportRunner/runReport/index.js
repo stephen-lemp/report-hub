@@ -7,6 +7,9 @@ let portletApi = null;
 let portletResizePending = false;
 const PORTLET_MIN_HEIGHT = 420;
 const PORTLET_PADDING = 24;
+let resultsTableResizeHooked = false;
+let lastPollElapsed = null;
+let pendingTableCompletion = false;
 
 jQuery(document).ready(function () {
   require(['N/runtime', 'N/ui/message', 'N/currentRecord'], (runtime, message, currentRecord) => {
@@ -55,9 +58,12 @@ function setResultsTitle(text) {
   if (titleElement) {
     titleElement.textContent = text;
   }
-  resultsTable.on('tableBuilt', () => {
-    schedulePortletResize();
-  });
+  if (resultsTable && !resultsTableResizeHooked) {
+    resultsTable.on('tableBuilt', () => {
+      schedulePortletResize();
+    });
+    resultsTableResizeHooked = true;
+  }
 }
 
 const CustomColumnFilterDefinitions = {
@@ -201,11 +207,35 @@ function pollForData(statusUrl, params, intervalMs = 2000, maxTries = 300) {
   console.log('pollForData() called with', { statusUrl, params, intervalMs, maxTries });
   return new Promise((resolve, reject) => {
     let tries = 0;
-    let { taskId, requestGuid } = params;
+    let { taskId, requestGuid } = params || {};
+    pendingTableCompletion = false;
+    lastPollElapsed = null;
+    const startTime = Date.now();
+    let statusLabel = 'Loading data...';
+    let timersStopped = false;
+    let finalElapsedValue = null;
 
-    const timer = setInterval(() => {
-      setResultsTitle('Results - ⏳ Loading...');   // Loading
+    const formatElapsed = () => {
+      const seconds = (Date.now() - startTime) / 1000;
+      return `${seconds.toFixed(1)}s`;
+    };
+    const applyTitle = () => {
+      setResultsTitle(`Results - ⏳ ${statusLabel} (${formatElapsed()})`);
+    };
+    applyTitle();
+    const titleTimer = setInterval(applyTitle, 200);
 
+    const stopTimers = () => {
+      if (!timersStopped) {
+        timersStopped = true;
+        clearInterval(pollTimer);
+        clearInterval(titleTimer);
+        finalElapsedValue = formatElapsed();
+      }
+      return finalElapsedValue || formatElapsed();
+    };
+
+    const pollTimer = setInterval(() => {
       console.log('pollForData() polling...', { tries, taskId, requestGuid });
       makeRequest('POST', `${statusUrl}&taskId=${taskId ? taskId : ''}&requestGuid=${requestGuid}`)
         .then(response => {
@@ -213,8 +243,10 @@ function pollForData(statusUrl, params, intervalMs = 2000, maxTries = 300) {
           response = JSON.parse(response);
           const status = (response.status || '').toUpperCase();
           if (status === 'COMPLETE' || status === 'SUCCEEDED') {
-            setResultsTitle('Results - ✅ Success!');        // success
-            clearInterval(timer);
+            const finalElapsed = stopTimers();
+            lastPollElapsed = finalElapsed;
+            pendingTableCompletion = true;
+            setResultsTitle(`Results - ✅ Success - Building Table... (${finalElapsed})`);
             if (response.data) {
               console.log('pollForData() completed with data length', response.data?.length);
               resolve(response.data || []);
@@ -226,20 +258,32 @@ function pollForData(statusUrl, params, intervalMs = 2000, maxTries = 300) {
               resolve([]);
             }
           } else if (status === 'FAILED') {
-            setResultsTitle('Results - ❌ Failed');
-            clearInterval(timer);
+            pendingTableCompletion = false;
+            const finalElapsed = stopTimers();
+            setResultsTitle(`Results - ❌ Failed (${finalElapsed})`);
             reject(new Error('Task failed'));
           } else if (++tries >= maxTries) {
-            clearInterval(timer);
-            setResultsTitle('Results - ❌ ⏱️ Timeout ');
+            pendingTableCompletion = false;
+            const finalElapsed = stopTimers();
+            setResultsTitle(`Results - ❌ ⏱️ Timeout (${finalElapsed})`);
             reject(new Error('Timeout while waiting for data'));
           } else {
-            setResultsTitle('Results - ⏳ Loading...');   // Loading
-            taskId = response.taskId; //update taskId for next poll
+            if (status === 'PENDING') {
+              statusLabel = 'Waiting for server thread to open up...';
+            } else {
+              statusLabel = 'Loading data...';
+            }
+            applyTitle();
+            taskId = response.taskId || taskId; //update taskId for next poll
+            if (!requestGuid) {
+              requestGuid = response.requestGuid || requestGuid;
+            }
           }
         })
         .catch(err => {
-          clearInterval(timer);
+          pendingTableCompletion = false;
+          const finalElapsed = stopTimers();
+          setResultsTitle(`Results - ❌ Error (${finalElapsed})`);
           reject(err);
           console.error('pollForData() makeRequest error', err);
         });
@@ -291,6 +335,13 @@ async function setupDocumentReady() {
 
   resultsTable.on('tableBuilt', () => {
     schedulePortletResize();
+  });
+  resultsTable.on('renderComplete', () => {
+    if (pendingTableCompletion) {
+      pendingTableCompletion = false;
+      const elapsed = lastPollElapsed || '0.0s';
+      setResultsTitle(`Results - ✅ Done (${elapsed})`);
+    }
   });
   schedulePortletResize();
 }
