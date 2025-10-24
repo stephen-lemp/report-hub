@@ -61,9 +61,9 @@
       <fieldtype>TEXT</fieldtype>
       <globalsearch>F</globalsearch>
       <help>Enter the category you&apos;d like to assign this report. This impacts how the main
-        report selection page looks. Use a colon (:) to define sub-categories. For example, you
-        could enter something like &quot;Sales : Planning : Historical Sales&quot; as a category.
-        You can define up to 5 levels of categorization.</help>
+      report selection page looks. Use a colon (:) to define sub-categories. For example, you
+      could enter something like &quot;Sales : Planning : Historical Sales&quot; as a category.
+      You can define up to 5 levels of categorization.</help>
       <isformula>F</isformula>
       <ismandatory>F</ismandatory>
       <isparent>F</isparent>
@@ -95,7 +95,7 @@
       <defaultselection></defaultselection>
       <defaultvalue></defaultvalue>
       <description>Checkbox indicating if script should run query or saved search ad hoc or if it
-        should offload to background job and use polling to show results.</description>
+      should offload to background job and use polling to show results.</description>
       <displayheight></displayheight>
       <displaytype>NORMAL</displaytype>
       <displaywidth></displaywidth>
@@ -105,7 +105,7 @@
       <fieldtype>CHECKBOX</fieldtype>
       <globalsearch>F</globalsearch>
       <help>Use this checkbox if you want results to appear more quickly and have less than 5000
-        results for SuiteQL queries and less than 4000 results for Saved Search results.</help>
+      results for SuiteQL queries and less than 4000 results for Saved Search results.</help>
       <isformula>F</isformula>
       <ismandatory>F</ismandatory>
       <isparent>F</isparent>
@@ -217,7 +217,7 @@
       <defaultselection></defaultselection>
       <defaultvalue></defaultvalue>
       <description>The internal ID of a saved search for use when you cannot make the Saved Search
-        public.</description>
+      public.</description>
       <displayheight></displayheight>
       <displaytype>NORMAL</displaytype>
       <displaywidth></displaywidth>
@@ -227,8 +227,8 @@
       <fieldtype>INTEGER</fieldtype>
       <globalsearch>F</globalsearch>
       <help>Enter the internal ID of the saved search you would like to display. Only public saved
-        searches appear in the &quot;Saved Search&quot; dropdown, but you can enter any saved search
-        ID in this field.</help>
+      searches appear in the &quot;Saved Search&quot; dropdown, but you can enter any saved search
+      ID in this field.</help>
       <isformula>F</isformula>
       <ismandatory>F</ismandatory>
       <isparent>F</isparent>
@@ -260,7 +260,7 @@
       <defaultselection></defaultselection>
       <defaultvalue></defaultvalue>
       <description>Use when you just want to display a link to a report in the main Reports List
-        page.</description>
+      page.</description>
       <displayheight></displayheight>
       <displaytype>NORMAL</displaytype>
       <displaywidth></displaywidth>
@@ -270,7 +270,7 @@
       <fieldtype>URL</fieldtype>
       <globalsearch>F</globalsearch>
       <help>Use when you just want to display a link to a report in the main Reports List page.
-        Enter any url and users will be directed to the url you enter when the report is clicked.</help>
+      Enter any url and users will be directed to the url you enter when the report is clicked.</help>
       <isformula>F</isformula>
       <ismandatory>F</ismandatory>
       <isparent>F</isparent>

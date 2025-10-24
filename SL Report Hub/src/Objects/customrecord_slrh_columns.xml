@@ -181,13 +181,13 @@
       <fieldtype>TEXT</fieldtype>
       <globalsearch>F</globalsearch>
       <help>Enter the type of data in this column.&#xd;
-        Valid options are: &#xd;
-        - text&#xd;
-        - number&#xd;
-        - date&#xd;
-        - datetime&#xd;
-        - select&#xd;
-        - multiselect</help>
+      Valid options are: &#xd;
+      - text&#xd;
+      - number&#xd;
+      - date&#xd;
+      - datetime&#xd;
+      - select&#xd;
+      - multiselect</help>
       <isformula>F</isformula>
       <ismandatory>F</ismandatory>
       <isparent>F</isparent>
