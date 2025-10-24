@@ -1,4 +1,5 @@
-<entryForm scriptid="custform_sl_reporthubconfig" standard="STANDARDCUSTOMRECORD_SL_REPORTHUBCONFIGFORM">
+<entryForm scriptid="custform_sl_reporthubconfig"
+  standard="STANDARDCUSTOMRECORD_SL_REPORTHUBCONFIGFORM">
   <name>SL Report Hub Config Form</name>
   <recordType>[scriptid=customrecord_sl_reporthubconfig]</recordType>
   <inactive>F</inactive>
@@ -189,20 +190,20 @@
         </field>
       </fields>
     </fieldGroup>
-    <defaultFieldGroup/>
+    <defaultFieldGroup />
   </mainFields>
   <tabs>
     <tab>
-      <id>[scriptid=customrecord_sl_reporthubconfig._slrr_filtersandoptions]</id>
+      <id>[scriptid=customrecord_sl_reporthubconfig._slrh_filtersandoptions]</id>
       <label>Filters and Options</label>
       <visible>T</visible>
       <fieldGroups>
-        <defaultFieldGroup/>
+        <defaultFieldGroup />
       </fieldGroups>
       <subItems>
         <subList>
           <id>[scriptid=customrecord_slrh_columns.custrecord_slrhc_configlink]</id>
-          <label>Report Runner Columns</label>
+          <label>Report Hub Columns</label>
           <visible>T</visible>
           <neverEmpty>F</neverEmpty>
         </subList>
@@ -213,7 +214,7 @@
       <label>Notes</label>
       <visible>T</visible>
       <fieldGroups>
-        <defaultFieldGroup/>
+        <defaultFieldGroup />
       </fieldGroups>
       <subItems>
         <subList>
@@ -235,7 +236,7 @@
       <label>Files</label>
       <visible>T</visible>
       <fieldGroups>
-        <defaultFieldGroup/>
+        <defaultFieldGroup />
       </fieldGroups>
       <subItems>
         <subList>
@@ -251,7 +252,7 @@
       <label>Translation</label>
       <visible>T</visible>
       <fieldGroups>
-        <defaultFieldGroup/>
+        <defaultFieldGroup />
       </fieldGroups>
       <subItems>
         <subList>
@@ -267,7 +268,7 @@
       <label>Workflow</label>
       <visible>T</visible>
       <fieldGroups>
-        <defaultFieldGroup/>
+        <defaultFieldGroup />
       </fieldGroups>
       <subItems>
         <subList>
@@ -289,9 +290,9 @@
       <label>Custom</label>
       <visible>T</visible>
       <fieldGroups>
-        <defaultFieldGroup/>
+        <defaultFieldGroup />
       </fieldGroups>
-      <subItems/>
+      <subItems />
     </tab>
   </tabs>
   <actionbar>

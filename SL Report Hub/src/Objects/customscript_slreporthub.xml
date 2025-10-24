@@ -1,27 +1,30 @@
 <suitelet scriptid="customscript_slreporthub">
-  <description>Runs reports for user based on roles and permissions defined on Report Hub Config records.</description>
+  <description>Runs reports for user based on roles and permissions defined on Report Hub Config
+    records.</description>
   <isinactive>F</isinactive>
   <name>SL Report Hub</name>
   <notifyadmins>F</notifyadmins>
   <notifyemails></notifyemails>
   <notifyowner>T</notifyowner>
   <notifyuser>F</notifyuser>
-  <scriptfile>[/SuiteScripts/sl/reportRunner/main.js]</scriptfile>
+  <scriptfile>[/SuiteScripts/sl/reportHub/main.js]</scriptfile>
   <scriptcustomfields>
-    <scriptcustomfield scriptid="custscript_slrr_suitelet_reportconfig">
+    <scriptcustomfield scriptid="custscript_slrh_suitelet_reportconfig">
       <accesslevel>2</accesslevel>
       <applyformatting>F</applyformatting>
       <checkspelling>F</checkspelling>
       <defaultchecked>F</defaultchecked>
       <defaultselection></defaultselection>
       <defaultvalue></defaultvalue>
-      <description>Select the report to run for this deployment. If blank, page will return a list of all available reports.</description>
+      <description>Select the report to run for this deployment. If blank, page will return a list
+        of all available reports.</description>
       <displayheight></displayheight>
       <displaytype>NORMAL</displaytype>
       <displaywidth></displaywidth>
       <dynamicdefault></dynamicdefault>
       <fieldtype>SELECT</fieldtype>
-      <help>Select the report to run for this deployment. If blank, page will return a list of all available reports.</help>
+      <help>Select the report to run for this deployment. If blank, page will return a list of all
+        available reports.</help>
       <isformula>F</isformula>
       <ismandatory>F</ismandatory>
       <label>Report Config</label>
@@ -42,7 +45,7 @@
       <allpartners>F</allpartners>
       <allroles>F</allroles>
       <audslctrole>ADMINISTRATOR</audslctrole>
-      <custscript_slrr_suitelet_reportconfig></custscript_slrr_suitelet_reportconfig>
+      <custscript_slrh_suitelet_reportconfig></custscript_slrh_suitelet_reportconfig>
       <eventtype></eventtype>
       <isdeployed>T</isdeployed>
       <isonline>F</isonline>
@@ -53,29 +56,10 @@
       <links>
         <link>
           <linkcategory>BASICLISTSSEARCH</linkcategory>
-          <linklabel>Report Runner - List</linklabel>
+          <linklabel>Report Hub - List</linklabel>
         </link>
       </links>
     </scriptdeployment>
-    <scriptdeployment scriptid="customdeploy3">
-      <allemployees>F</allemployees>
-      <allpartners>F</allpartners>
-      <allroles>T</allroles>
-      <audslctrole></audslctrole>
-      <custscript_slrr_suitelet_reportconfig>[scriptid=customrecord_sl_reporthubconfig.val_314124_t1379078_176]</custscript_slrr_suitelet_reportconfig>
-      <eventtype></eventtype>
-      <isdeployed>T</isdeployed>
-      <isonline>F</isonline>
-      <loglevel>DEBUG</loglevel>
-      <runasrole></runasrole>
-      <status>RELEASED</status>
-      <title>Big Data for All</title>
-      <links>
-        <link>
-          <linkcategory>BASICREPORTSCUSTOM</linkcategory>
-          <linklabel>Big Data RR Test</linklabel>
-        </link>
-      </links>
-    </scriptdeployment>
+
   </scriptdeployments>
 </suitelet>
