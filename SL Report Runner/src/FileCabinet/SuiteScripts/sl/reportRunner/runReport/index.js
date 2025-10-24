@@ -58,9 +58,9 @@ function setResultsTitle(text) {
   schedulePortletResize();
 }
 
-const CustomHeaderFilters = {
-  DATE_RANGE: { //https://stackoverflow.com/questions/64257406/tabulator-filter-by-date-range-from-to-in-header
-    editor: function (cell, onRendered, success, cancel, editorParams) {
+const CustomColumnFilterDefinitions = {
+  date: { //do date range: https://stackoverflow.com/questions/64257406/tabulator-filter-by-date-range-from-to-in-header
+    filterEditor: function (cell, onRendered, success, cancel, editorParams) {
       var end;
       var container = document.createElement("span");
       //create and style inputs
@@ -206,14 +206,16 @@ function getDataFromLink(dataLink, requestGuid) {
 
 async function setupDocumentReady() {
   currentReportId = cr.getValue('custpage_reportid');
-  const columns = JSON.parse(cr.getValue('cuatpage_columndefinitions'));
+  const columns = JSON.parse(cr.getValue('custpage_columndefinitions'));
   console.log('setupDocumentReady', { currentReportId, columns });
   const requestGuid = `${runtime.getCurrentUser().id}-${new Date().getTime()}-${currentReportId}`;
 
   resultsTable = new Tabulator(
     `#results-table`,
     {
-      columns,
+      layout: "fitDataStretch",
+      autoColumns: true,
+      autoColumnsDefinitions: parseCustomColumnDefinitions(columns),
       pagination: true,
       paginationSize: 25,
       paginationSizeSelector: [10, 25, 50, 100, true],
@@ -229,18 +231,43 @@ async function setupDocumentReady() {
   );
 }
 
-function getCustomColumnDefinitions() {
-  return makeRequest('POST', getUrl({ action: 'GET_REPORT_COLUMNS', reportId: currentReportId }))
-    .then((response) => {
-      const customDefinitions = JSON.parse(response || '[]');
-      console.log('Custom Definitions:', customDefinitions);
-      return customDefinitions;
-    })
-    .catch((error) => {
-      console.error('Error fetching column definitions:', error);
-      return [];
-    });
+function parseCustomColumnDefinitions(columns) {
+  const results = [];
+  const userFormattingOptions = JSON.parse(cr.getValue('custpage_userformattingoptions'));
+
+  for (const col of columns) {
+    const updatedDefinition = {
+      field: col.field,
+      title: col.title,
+    };
+
+    if (col.type == 'date') {
+      updatedDefinition.sorter = 'date';
+      updatedDefinition.sorterParams = { format: convertDateFormat(userFormattingOptions.dateFormat, 'LUX') };
+      if (col.allowfiltering === 'T') {
+        updatedDefinition.headerFilter = CustomColumnFilterDefinitions.date.filterEditor;
+        updatedDefinition.headerFilterFunc = CustomColumnFilterDefinitions.date.filterFunction;
+        updatedDefinition.width = '15px';
+      }
+    } else if (col.type === 'select' && col.allowfiltering === 'T') {
+      updatedDefinition.headerFilter = 'list';
+      updatedDefinition.headerFilterParams = {
+        valuesLookup: "active", //get the values from the currently active rows in this column
+        autocomplete: true
+      };
+    } else if (col.type === 'html') {
+      updatedDefinition.formatter = 'html';
+      if (col.allowfiltering === 'T') updatedDefinition.headerFilter = 'input';
+    } else { // default
+      if (col.allowfiltering === 'T') updatedDefinition.headerFilter = 'input';
+    }
+
+    results.push(updatedDefinition);
+  }
+
+  return results;
 }
+
 
 function getUrl(parameters = {}) {
   const currentUrl = new URL(window.location.href);
@@ -306,4 +333,50 @@ function initializeDownloadButton() {
 
 function getTable() {
   return Tabulator.findTable('#results-table')[0];
+}
+
+function mergeObjects(obj1, obj2) {
+  const merged = structuredClone(obj1);
+  Object.assign(merged, obj2);
+  return merged;
+}
+
+
+/**
+ * Convert date format between NetSuite and Luxon.
+ * @param {string} format - The format string to convert.
+ * @param {'LUX'|'NS'} target - 'LUX' to convert to Luxon, 'NS' to convert to NetSuite.
+ * @returns {string} Converted format string.
+ */
+function convertDateFormat(format, target) {
+  if (!['LUX', 'NS'].includes(target)) {
+    throw new Error("target must be 'LUX' or 'NS'");
+  }
+
+  // Mapping table: [NetSuite, Luxon]
+  const mappings = [
+    ['YYYY', 'yyyy'],
+    ['YY', 'yy'],
+    ['MMMM', 'LLLL'],
+    ['MMM', 'LLL'],
+    ['DD', 'dd'],
+    ['D', 'd'],
+    ['A', 'a'],
+    ['HH', 'HH'],  // 24-hour
+    ['H', 'H'],    // 24-hour no pad
+    ['hh', 'hh'],  // 12-hour
+    ['h', 'h'],    // 12-hour no pad
+    // Note: minutes/seconds are identical, no need to map
+  ];
+
+  let result = format;
+
+  for (const [ns, lx] of mappings) {
+    const from = target === 'LUX' ? ns : lx;
+    const to = target === 'LUX' ? lx : ns;
+    // Use word boundaries to prevent accidental partial replacements
+    result = result.replace(new RegExp(`\\b${from}\\b`, 'g'), to);
+  }
+
+  return result;
 }

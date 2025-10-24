@@ -51,7 +51,7 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
   function getReportColumnDefinitionsById(reportId) {
     log.debug({ title: 'getReportColumnDefinitionsById', details: `Report ID: ${reportId}` });
     return query.runSuiteQL({
-      query: `SELECT  custrecord_slrrc_id field,  custrecord_slrrc_title title, custrecord_slrrc_type editor_select, custrecord_slrrc_allowfiltering filtering_options
+      query: `SELECT  custrecord_slrrc_id field,  custrecord_slrrc_title title, custrecord_slrrc_type type, custrecord_slrrc_allowfiltering allowfiltering
               FROM customrecord_slrr_columns 
               WHERE custrecord_slrrc_configlink = ?`,
       params: [reportId]
@@ -252,12 +252,23 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
       .defaultValue = reportId;
 
     form.addField({
-      id: 'cuatpage_columndefinitions',
+      id: 'custpage_columndefinitions',
       type: serverWidget.FieldType.LONGTEXT,
       label: 'Columns'
     })
       .updateDisplayType({ displayType: serverWidget.FieldDisplayType.HIDDEN })
       .defaultValue = JSON.stringify(getReportColumnDefinitionsById(reportId));
+
+    form.addField({
+      id: 'custpage_userformattingoptions',
+      type: serverWidget.FieldType.LONGTEXT,
+      label: 'User Formatting Options'
+    })
+      .updateDisplayType({ displayType: serverWidget.FieldDisplayType.HIDDEN })
+      .defaultValue = JSON.stringify({
+        dateFormat: config.load({ type: config.Type.USER_PREFERENCES }).getValue('DATEFORMAT')
+      });
+
     context.response.writePage(form);
   }
 
