@@ -31,7 +31,7 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
           return;
         }
       } else {
-        const reportId = context.request.parameters.reportId || runtime.getCurrentScript().getParameter('custscript_slrr_suitelet_reportconfig');
+        const reportId = context.request.parameters.reportId || runtime.getCurrentScript().getParameter('custscript_slrh_suitelet_reportconfig');
         log.debug('onRequest reportid', reportId);
         log.debug({ title: 'GET Request', details: context.request });
         if (reportId) { generateReportDisplay(context, reportId); }
@@ -49,10 +49,10 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
     return query.runSuiteQL({
       query: `
       select id, CASE 
-        WHEN BUILTIN.MNFILTER(custrecord_slrrc_availableto, 'MN_INCLUDE', '', 'TRUE', ?) = 'TRUE' THEN 'T' 
-        WHEN NVL(custrecord_slrrc_availabletoall,'F') = 'T' THEN 'T'
+        WHEN BUILTIN.MNFILTER(custrecord_slrhc_availableto, 'MN_INCLUDE', '', 'TRUE', ?) = 'TRUE' THEN 'T' 
+        WHEN NVL(custrecord_slrhc_availabletoall,'F') = 'T' THEN 'T'
         ELSE 'F' END authorized
-        from customrecord_sl_reportrunnerconfig
+        from customrecord_sl_reporthubconfig
       where id = ?`,
       params: [userRoleId, reportId]
     }).asMappedResults()[0]?.authorized === 'T';
@@ -68,7 +68,7 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
       return { status: 'FAILED', message: 'User Role not Authorized to View this Report', requestGuid };
     }
 
-    //custrecord_slrr_usequickrun
+    //custrecord_slrh_usequickrun
     if (taskId) { // polling for existing task
       const taskStatus = task.checkStatus({ taskId: taskId });
       log.debug('getReportData() taskStatus', taskStatus);
@@ -83,14 +83,14 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
       }
     } else { // no task id. initiate new task or quick run
       const reportOptions = search.lookupFields({
-        type: 'customrecord_sl_reportrunnerconfig',
+        type: 'customrecord_sl_reporthubconfig',
         id: reportId,
-        columns: ['custrecord_slrr_suiteqlquery', 'custrecord_slrr_savedsearch', 'custrecord_slrrc_savedsearchid', 'custrecord_slrr_usequickrun']
+        columns: ['custrecord_slrh_suiteqlquery', 'custrecord_slrh_savedsearch', 'custrecord_slrhc_savedsearchid', 'custrecord_slrh_usequickrun']
       });
       log.debug('getReportData() reportOptions', reportOptions);
-      const isQuickRunReport = reportOptions.custrecord_slrr_usequickrun;
-      const queryText = reportOptions.custrecord_slrr_suiteqlquery;
-      const savedSearchId = reportOptions.custrecord_slrr_savedsearch[0]?.value || reportOptions.custrecord_slrrc_savedsearchid;
+      const isQuickRunReport = reportOptions.custrecord_slrh_usequickrun;
+      const queryText = reportOptions.custrecord_slrh_suiteqlquery;
+      const savedSearchId = reportOptions.custrecord_slrh_savedsearch[0]?.value || reportOptions.custrecord_slrhc_savedsearchid;
       if (isQuickRunReport) {
         const results = queryText ?
           query.runSuiteQL({ query: queryText }).asMappedResults() :
@@ -165,7 +165,7 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
 
 
   function getBaseFilePath() {
-    return runtime.getCurrentScript().getParameter('custscript_slrr_export_basepath') || '/TEMP';
+    return runtime.getCurrentScript().getParameter('custscript_slrh_export_basepath') || '/TEMP';
   }
 
 

@@ -6,9 +6,9 @@ define(['N/search', 'N/file', 'N/ui/serverWidget', 'N/config', 'N/query'], funct
 
   function setupReportListingPage(form) {
     form.title = 'Report List';
-    const style = `<style>${file.load({ id: '/SuiteScripts/sl/reportRunner/listReports/index.css' }).getContents()}</style>`;
-    const script = `<script>${file.load({ id: '/SuiteScripts/sl/reportRunner/listReports/index.js' }).getContents()}</script>`;
-    const body = `<body>${file.load({ id: '/SuiteScripts/sl/reportRunner/listReports/index.html' }).getContents()}</body>`;
+    const style = `<style>${file.load({ id: '/SuiteScripts/sl/reportHub/listReports/index.css' }).getContents()}</style>`;
+    const script = `<script>${file.load({ id: '/SuiteScripts/sl/reportHub/listReports/index.js' }).getContents()}</script>`;
+    const body = `<body>${file.load({ id: '/SuiteScripts/sl/reportHub/listReports/index.html' }).getContents()}</body>`;
 
     form.addField({
       id: 'custpage_reportslisting',
@@ -19,14 +19,14 @@ define(['N/search', 'N/file', 'N/ui/serverWidget', 'N/config', 'N/query'], funct
 
   function setupReportDisplayPage(form, reportId) {
     form.title = search.lookupFields({
-      type: 'customrecord_sl_reportrunnerconfig',
+      type: 'customrecord_sl_reporthubconfig',
       id: reportId,
       columns: ['name']
     }).name;
 
-    const style = `<style>${file.load({ id: '/SuiteScripts/sl/reportRunner/runReport/index.css' }).getContents()}</style>`;
-    const script = `<script>${file.load({ id: '/SuiteScripts/sl/reportRunner/runReport/index.js' }).getContents()}</script>`;
-    const body = `<body>${file.load({ id: '/SuiteScripts/sl/reportRunner/runReport/index.html' }).getContents()}</body>`;
+    const style = `<style>${file.load({ id: '/SuiteScripts/sl/reportHub/runReport/index.css' }).getContents()}</style>`;
+    const script = `<script>${file.load({ id: '/SuiteScripts/sl/reportHub/runReport/index.js' }).getContents()}</script>`;
+    const body = `<body>${file.load({ id: '/SuiteScripts/sl/reportHub/runReport/index.html' }).getContents()}</body>`;
 
     form.addField({
       id: 'custpage_reportoutput',
@@ -65,9 +65,9 @@ define(['N/search', 'N/file', 'N/ui/serverWidget', 'N/config', 'N/query'], funct
   function getReportColumnDefinitionsById(reportId) {
     log.debug({ title: 'getReportColumnDefinitionsById', details: `Report ID: ${reportId}` });
     return query.runSuiteQL({
-      query: `SELECT  custrecord_slrrc_id field,  custrecord_slrrc_title title, custrecord_slrrc_type type, custrecord_slrrc_allowfiltering allowfiltering
-              FROM customrecord_slrr_columns 
-              WHERE custrecord_slrrc_configlink = ?`,
+      query: `SELECT  custrecord_slrhc_id field,  custrecord_slrhc_title title, custrecord_slrhc_type type, custrecord_slrhc_allowfiltering allowfiltering
+              FROM customrecord_slrh_columns 
+              WHERE custrecord_slrhc_configlink = ?`,
       params: [reportId]
     }).asMappedResults() || [];
   }

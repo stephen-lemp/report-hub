@@ -1,4 +1,4 @@
-<customrecordtype scriptid="customrecord_sl_reportrunnerconfig">
+<customrecordtype scriptid="customrecord_sl_reporthubconfig">
   <accesstype>NONENEEDED</accesstype>
   <allowattachments>T</allowattachments>
   <allowinlinedeleting>F</allowinlinedeleting>
@@ -10,7 +10,7 @@
   <allowquicksearch>F</allowquicksearch>
   <allowuiaccess>T</allowuiaccess>
   <customsegment></customsegment>
-  <description>Configuration of a report that should be available on the Report Hub page.</description>
+  <description>Configuration of a report that should be available on the Report Runner page.</description>
   <enabledle>T</enabledle>
   <enablekeywords>T</enablekeywords>
   <enablemailmerge>F</enablemailmerge>
@@ -43,7 +43,7 @@
   <showownerallowchange>F</showownerallowchange>
   <showowneronlist>F</showowneronlist>
   <customrecordcustomfields>
-    <customrecordcustomfield scriptid="custrecord_slrrc_category">
+    <customrecordcustomfield scriptid="custrecord_slrhc_category">
       <accesslevel>2</accesslevel>
       <allowquickadd>F</allowquickadd>
       <applyformatting>F</applyformatting>
@@ -83,7 +83,7 @@
       <storevalue>T</storevalue>
       <subtab></subtab>
     </customrecordcustomfield>
-    <customrecordcustomfield scriptid="custrecord_slrr_usequickrun">
+    <customrecordcustomfield scriptid="custrecord_slrh_usequickrun">
       <accesslevel>2</accesslevel>
       <allowquickadd>F</allowquickadd>
       <applyformatting>F</applyformatting>
@@ -123,7 +123,7 @@
       <storevalue>T</storevalue>
       <subtab></subtab>
     </customrecordcustomfield>
-    <customrecordcustomfield scriptid="custrecord_slrr_suiteqlquery">
+    <customrecordcustomfield scriptid="custrecord_slrh_suiteqlquery">
       <accesslevel>2</accesslevel>
       <allowquickadd>F</allowquickadd>
       <applyformatting>F</applyformatting>
@@ -163,7 +163,7 @@
       <storevalue>T</storevalue>
       <subtab></subtab>
     </customrecordcustomfield>
-    <customrecordcustomfield scriptid="custrecord_slrr_savedsearch">
+    <customrecordcustomfield scriptid="custrecord_slrh_savedsearch">
       <accesslevel>2</accesslevel>
       <allowquickadd>F</allowquickadd>
       <applyformatting>F</applyformatting>
@@ -203,7 +203,7 @@
       <storevalue>T</storevalue>
       <subtab></subtab>
     </customrecordcustomfield>
-    <customrecordcustomfield scriptid="custrecord_slrrc_savedsearchid">
+    <customrecordcustomfield scriptid="custrecord_slrhc_savedsearchid">
       <accesslevel>2</accesslevel>
       <allowquickadd>F</allowquickadd>
       <applyformatting>F</applyformatting>
@@ -243,7 +243,7 @@
       <storevalue>T</storevalue>
       <subtab></subtab>
     </customrecordcustomfield>
-    <customrecordcustomfield scriptid="custrecord_slrrc_externalreportlink">
+    <customrecordcustomfield scriptid="custrecord_slrhc_externalreportlink">
       <accesslevel>2</accesslevel>
       <allowquickadd>F</allowquickadd>
       <applyformatting>F</applyformatting>
@@ -283,7 +283,7 @@
       <storevalue>T</storevalue>
       <subtab></subtab>
     </customrecordcustomfield>
-    <customrecordcustomfield scriptid="custrecord_slrrc_availableto">
+    <customrecordcustomfield scriptid="custrecord_slrhc_availableto">
       <accesslevel>2</accesslevel>
       <allowquickadd>F</allowquickadd>
       <applyformatting>F</applyformatting>
@@ -323,7 +323,7 @@
       <storevalue>T</storevalue>
       <subtab></subtab>
     </customrecordcustomfield>
-    <customrecordcustomfield scriptid="custrecord_slrrc_availabletoall">
+    <customrecordcustomfield scriptid="custrecord_slrhc_availabletoall">
       <accesslevel>2</accesslevel>
       <allowquickadd>F</allowquickadd>
       <applyformatting>F</applyformatting>
@@ -367,7 +367,7 @@
   <links>
     <link>
       <linkcategory>BASICSETUPCUSTOM</linkcategory>
-      <linklabel>Report Hub Configurations</linklabel>
+      <linklabel>Report Runner Configurations</linklabel>
       <linktasktype>LIST</linktasktype>
     </link>
   </links>

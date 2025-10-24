@@ -9,6 +9,10 @@
       <feature required="false">EXTREMELIST</feature>
       <feature required="false">MAILMERGE</feature>
       <feature required="true">CUSTOMRECORDS</feature>
+      <feature required="false">MULTILANGUAGE</feature>
+      <feature required="true">SUBSCRIPTIONBILLING</feature>
     </features>
+    <objects>
+    </objects>
   </dependencies>
 </manifest>

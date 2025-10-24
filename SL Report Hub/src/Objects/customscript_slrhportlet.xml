@@ -1,4 +1,4 @@
-<portlet scriptid="customscript_slrrportlet">
+<portlet scriptid="customscript_slrhportlet">
   <description>Display SL Report Hub reports.</description>
   <isinactive>F</isinactive>
   <name>SL Report Hub Portlet</name>
@@ -32,7 +32,7 @@
       <minvalue></minvalue>
       <onparentdelete>NO_ACTION</onparentdelete>
       <searchlevel>2</searchlevel>
-      <selectrecordtype>[scriptid=customrecord_sl_reportrunnerconfig]</selectrecordtype>
+      <selectrecordtype>[scriptid=customrecord_sl_reporthubconfig]</selectrecordtype>
       <setting></setting>
       <storevalue>T</storevalue>
     </scriptcustomfield>
@@ -43,7 +43,7 @@
       <allpartners>F</allpartners>
       <allroles>T</allroles>
       <audslctrole></audslctrole>
-      <custscript_slrr_portlet_reportid>[scriptid=customrecord_sl_reportrunnerconfig.val_314152_t1379078_769]</custscript_slrr_portlet_reportid>
+      <custscript_slrr_portlet_reportid>[scriptid=customrecord_sl_reporthubconfig.val_314152_t1379078_769]</custscript_slrr_portlet_reportid>
       <dashboardapp>F</dashboardapp>
       <isdeployed>T</isdeployed>
       <loglevel>DEBUG</loglevel>
@@ -69,7 +69,7 @@
       <allpartners>F</allpartners>
       <allroles>T</allroles>
       <audslctrole></audslctrole>
-      <custscript_slrr_portlet_reportid>[scriptid=customrecord_sl_reportrunnerconfig.val_314124_t1379078_176]</custscript_slrr_portlet_reportid>
+      <custscript_slrr_portlet_reportid>[scriptid=customrecord_sl_reporthubconfig.val_314124_t1379078_176]</custscript_slrr_portlet_reportid>
       <dashboardapp>F</dashboardapp>
       <isdeployed>T</isdeployed>
       <loglevel>DEBUG</loglevel>

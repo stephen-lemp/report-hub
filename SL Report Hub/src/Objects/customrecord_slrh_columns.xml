@@ -1,4 +1,4 @@
-<customrecordtype scriptid="customrecord_slrr_columns">
+<customrecordtype scriptid="customrecord_slrh_columns">
   <accesstype>NONENEEDED</accesstype>
   <allowattachments>T</allowattachments>
   <allowinlinedeleting>T</allowinlinedeleting>
@@ -43,7 +43,7 @@
   <showownerallowchange>F</showownerallowchange>
   <showowneronlist>F</showowneronlist>
   <customrecordcustomfields>
-    <customrecordcustomfield scriptid="custrecord_slrrc_configlink">
+    <customrecordcustomfield scriptid="custrecord_slrhc_configlink">
       <accesslevel>2</accesslevel>
       <allowquickadd>F</allowquickadd>
       <applyformatting>F</applyformatting>
@@ -51,7 +51,7 @@
       <defaultchecked>F</defaultchecked>
       <defaultselection></defaultselection>
       <defaultvalue></defaultvalue>
-      <description>Link to the Report Hub Config record associated with this filter.</description>
+      <description>Link to the Report Runner Config record associated with this filter.</description>
       <displayheight></displayheight>
       <displaytype>NORMAL</displaytype>
       <displaywidth></displaywidth>
@@ -60,7 +60,7 @@
       <encryptatrest>F</encryptatrest>
       <fieldtype>SELECT</fieldtype>
       <globalsearch>F</globalsearch>
-      <help>Link to the Report Hub Config record associated with this filter.</help>
+      <help>Link to the Report Runner Config record associated with this filter.</help>
       <isformula>F</isformula>
       <ismandatory>F</ismandatory>
       <isparent>T</isparent>
@@ -70,12 +70,12 @@
       <maxvalue></maxvalue>
       <minvalue></minvalue>
       <onparentdelete>NO_ACTION</onparentdelete>
-      <parentsubtab>[scriptid=customrecord_sl_reportrunnerconfig._slrr_filtersandoptions]</parentsubtab>
+      <parentsubtab>[scriptid=customrecord_sl_reporthubconfig._slrr_filtersandoptions]</parentsubtab>
       <rolerestrict>F</rolerestrict>
       <searchcomparefield></searchcomparefield>
       <searchdefault></searchdefault>
       <searchlevel>2</searchlevel>
-      <selectrecordtype>[scriptid=customrecord_sl_reportrunnerconfig]</selectrecordtype>
+      <selectrecordtype>[scriptid=customrecord_sl_reporthubconfig]</selectrecordtype>
       <showinlist>F</showinlist>
       <sourcefilterby></sourcefilterby>
       <sourcefrom></sourcefrom>
@@ -83,7 +83,7 @@
       <storevalue>T</storevalue>
       <subtab></subtab>
     </customrecordcustomfield>
-    <customrecordcustomfield scriptid="custrecord_slrrc_id">
+    <customrecordcustomfield scriptid="custrecord_slrhc_id">
       <accesslevel>2</accesslevel>
       <allowquickadd>F</allowquickadd>
       <applyformatting>F</applyformatting>
@@ -123,7 +123,7 @@
       <storevalue>T</storevalue>
       <subtab></subtab>
     </customrecordcustomfield>
-    <customrecordcustomfield scriptid="custrecord_slrrc_title">
+    <customrecordcustomfield scriptid="custrecord_slrhc_title">
       <accesslevel>2</accesslevel>
       <allowquickadd>F</allowquickadd>
       <applyformatting>F</applyformatting>
@@ -163,7 +163,7 @@
       <storevalue>T</storevalue>
       <subtab></subtab>
     </customrecordcustomfield>
-    <customrecordcustomfield scriptid="custrecord_slrrc_type">
+    <customrecordcustomfield scriptid="custrecord_slrhc_type">
       <accesslevel>2</accesslevel>
       <allowquickadd>F</allowquickadd>
       <applyformatting>F</applyformatting>
@@ -210,7 +210,7 @@ Valid options are: &#xd;
       <storevalue>T</storevalue>
       <subtab></subtab>
     </customrecordcustomfield>
-    <customrecordcustomfield scriptid="custrecord_slrrc_allowfiltering">
+    <customrecordcustomfield scriptid="custrecord_slrhc_allowfiltering">
       <accesslevel>2</accesslevel>
       <allowquickadd>F</allowquickadd>
       <applyformatting>F</applyformatting>
@@ -231,7 +231,7 @@ Valid options are: &#xd;
       <isformula>F</isformula>
       <ismandatory>F</ismandatory>
       <isparent>F</isparent>
-      <label>Allow Filtering</label>
+      <label>Enable Filtering</label>
       <linktext></linktext>
       <maxlength></maxlength>
       <maxvalue></maxvalue>

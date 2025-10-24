@@ -1,4 +1,4 @@
-<suitelet scriptid="customscript_slreportrunner">
+<suitelet scriptid="customscript_slreporthub">
   <description>Runs reports for user based on roles and permissions defined on Report Hub Config records.</description>
   <isinactive>F</isinactive>
   <name>SL Report Hub</name>
@@ -31,13 +31,13 @@
       <minvalue></minvalue>
       <onparentdelete>NO_ACTION</onparentdelete>
       <searchlevel>2</searchlevel>
-      <selectrecordtype>[scriptid=customrecord_sl_reportrunnerconfig]</selectrecordtype>
+      <selectrecordtype>[scriptid=customrecord_sl_reporthubconfig]</selectrecordtype>
       <setting></setting>
       <storevalue>T</storevalue>
     </scriptcustomfield>
   </scriptcustomfields>
   <scriptdeployments>
-    <scriptdeployment scriptid="customdeploy_slreportrunner">
+    <scriptdeployment scriptid="customdeploy_slreporthub">
       <allemployees>F</allemployees>
       <allpartners>F</allpartners>
       <allroles>F</allroles>
@@ -49,11 +49,11 @@
       <loglevel>ERROR</loglevel>
       <runasrole></runasrole>
       <status>RELEASED</status>
-      <title>SL Report Hub - Main</title>
+      <title>SL Report Hub - List</title>
       <links>
         <link>
           <linkcategory>BASICLISTSSEARCH</linkcategory>
-          <linklabel>Report Hub - List</linklabel>
+          <linklabel>Report Runner - List</linklabel>
         </link>
       </links>
     </scriptdeployment>
@@ -62,7 +62,7 @@
       <allpartners>F</allpartners>
       <allroles>T</allroles>
       <audslctrole></audslctrole>
-      <custscript_slrr_suitelet_reportconfig>[scriptid=customrecord_sl_reportrunnerconfig.val_314124_t1379078_176]</custscript_slrr_suitelet_reportconfig>
+      <custscript_slrr_suitelet_reportconfig>[scriptid=customrecord_sl_reporthubconfig.val_314124_t1379078_176]</custscript_slrr_suitelet_reportconfig>
       <eventtype></eventtype>
       <isdeployed>T</isdeployed>
       <isonline>F</isonline>

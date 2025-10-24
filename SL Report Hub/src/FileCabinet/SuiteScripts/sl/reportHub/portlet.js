@@ -8,7 +8,7 @@ define(['N/runtime', 'N/file', 'N/ui/serverWidget', 'N/search', './uiLibrary.js'
 
 
   function renderContent(params) {
-    const reportId = runtime.getCurrentScript().getParameter({ name: 'custscript_slrr_portlet_reportid' });
+    const reportId = runtime.getCurrentScript().getParameter({ name: 'custscript_slrh_portlet_reportid' });
     if (!reportId) { ui.setupReportListingPage(params.portlet); }
     else { ui.setupReportDisplayPage(params.portlet, reportId); }
   }

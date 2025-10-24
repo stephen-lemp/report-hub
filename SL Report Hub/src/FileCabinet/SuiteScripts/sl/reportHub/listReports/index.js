@@ -1,4 +1,4 @@
-const BASE_URL = `/app/site/hosting/scriptlet.nl?script=customscript_slreportrunner&deploy=customdeploy_slreportrunner`;
+const BASE_URL = `/app/site/hosting/scriptlet.nl?script=customscript_slreporthub&deploy=customdeploy_slreporthub`;
 let portletApi = null;
 let portletResizePending = false;
 const PORTLET_MIN_HEIGHT = 120;
@@ -32,7 +32,7 @@ function schedulePortletResize() {
   window.requestAnimationFrame(() => {
     portletResizePending = false;
     try {
-      const card = document.getElementById('slrr-list-card');
+      const card = document.getElementById('slrh-list-card');
       const measuredHeight = card ? Math.ceil(card.getBoundingClientRect().height) : document.body.scrollHeight;
       const height = Math.max(measuredHeight + PORTLET_PADDING, PORTLET_MIN_HEIGHT);
 
@@ -53,9 +53,9 @@ function schedulePortletResize() {
 
 function getReportDefinitions() {
   return query.runSuiteQL({
-    query: `select id, name, custrecord_slrrc_category,custrecord_slrrc_externalreportlink external_report_link from 	customrecord_sl_reportrunnerconfig where isinactive = 'F' AND  CASE 
-        WHEN BUILTIN.MNFILTER(custrecord_slrrc_availableto, 'MN_INCLUDE', '', 'TRUE', ?) = 'TRUE' THEN 'T' 
-        WHEN NVL(custrecord_slrrc_availabletoall,'F') = 'T' THEN 'T'
+    query: `select id, name, custrecord_slrhc_category,custrecord_slrhc_externalreportlink external_report_link from 	customrecord_sl_reporthubconfig where isinactive = 'F' AND  CASE 
+        WHEN BUILTIN.MNFILTER(custrecord_slrhc_availableto, 'MN_INCLUDE', '', 'TRUE', ?) = 'TRUE' THEN 'T' 
+        WHEN NVL(custrecord_slrhc_availabletoall,'F') = 'T' THEN 'T'
         ELSE 'F' END = 'T'`,
     params: [runtime.getCurrentUser().role]
   }).asMappedResults();
@@ -75,7 +75,7 @@ function setupPage() {
   function buildTree(items, delim) {
     const root = { key: "__root__", path: [], children: new Map(), items: [] };
     for (const it of items) {
-      const raw = it.custrecord_slrrc_category || "Uncategorized";
+      const raw = it.custrecord_slrhc_category || "Uncategorized";
       const parts = raw.split(delim).map(s => s.trim()).filter(Boolean);
       let node = root;
       for (const part of parts) {
@@ -295,7 +295,7 @@ function setupPage() {
 
     // items
     for (const it of node.items) {
-      if (matches(it.name, q) || matches(it.custrecord_slrrc_category || "", q)) {
+      if (matches(it.name, q) || matches(it.custrecord_slrhc_category || "", q)) {
         filtered.items.push(it);
       }
     }

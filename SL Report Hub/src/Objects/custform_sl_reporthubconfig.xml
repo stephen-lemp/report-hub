@@ -1,6 +1,6 @@
-<entryForm scriptid="custform_sl_reportrunnerconfig" standard="STANDARDCUSTOMRECORD_SL_REPORTRUNNERCONFIGFORM">
+<entryForm scriptid="custform_sl_reporthubconfig" standard="STANDARDCUSTOMRECORD_SL_REPORTHUBCONFIGFORM">
   <name>SL Report Hub Config Form</name>
-  <recordType>[scriptid=customrecord_sl_reportrunnerconfig]</recordType>
+  <recordType>[scriptid=customrecord_sl_reporthubconfig]</recordType>
   <inactive>F</inactive>
   <preferred>T</preferred>
   <storedWithRecord>F</storedWithRecord>
@@ -22,7 +22,7 @@
           <quickAdd>T</quickAdd>
         </field>
         <field>
-          <id>[scriptid=customrecord_sl_reportrunnerconfig.custrecord_slrrc_category]</id>
+          <id>[scriptid=customrecord_sl_reporthubconfig.custrecord_slrhc_category]</id>
           <label>Category</label>
           <visible>T</visible>
           <mandatory>F</mandatory>
@@ -32,7 +32,7 @@
           <quickAdd>F</quickAdd>
         </field>
         <field>
-          <id>[scriptid=customrecord_sl_reportrunnerconfig.custrecord_slrr_usequickrun]</id>
+          <id>[scriptid=customrecord_sl_reporthubconfig.custrecord_slrh_usequickrun]</id>
           <label>Quick Run</label>
           <visible>T</visible>
           <mandatory>F</mandatory>
@@ -110,7 +110,7 @@
       <singleColumn>F</singleColumn>
       <fields position="MIDDLE">
         <field>
-          <id>[scriptid=customrecord_sl_reportrunnerconfig.custrecord_slrr_suiteqlquery]</id>
+          <id>[scriptid=customrecord_sl_reporthubconfig.custrecord_slrh_suiteqlquery]</id>
           <label>SuiteQL Query</label>
           <visible>T</visible>
           <mandatory>F</mandatory>
@@ -120,7 +120,7 @@
           <quickAdd>F</quickAdd>
         </field>
         <field>
-          <id>[scriptid=customrecord_sl_reportrunnerconfig.custrecord_slrr_savedsearch]</id>
+          <id>[scriptid=customrecord_sl_reporthubconfig.custrecord_slrh_savedsearch]</id>
           <label>Saved Search</label>
           <visible>T</visible>
           <mandatory>F</mandatory>
@@ -130,7 +130,7 @@
           <quickAdd>F</quickAdd>
         </field>
         <field>
-          <id>[scriptid=customrecord_sl_reportrunnerconfig.custrecord_slrrc_savedsearchid]</id>
+          <id>[scriptid=customrecord_sl_reporthubconfig.custrecord_slrhc_savedsearchid]</id>
           <label>Saved Search ID</label>
           <visible>T</visible>
           <mandatory>F</mandatory>
@@ -140,7 +140,7 @@
           <quickAdd>F</quickAdd>
         </field>
         <field>
-          <id>[scriptid=customrecord_sl_reportrunnerconfig.custrecord_slrrc_externalreportlink]</id>
+          <id>[scriptid=customrecord_sl_reporthubconfig.custrecord_slrhc_externalreportlink]</id>
           <label>External Report Link</label>
           <visible>T</visible>
           <mandatory>F</mandatory>
@@ -158,7 +158,7 @@
       <singleColumn>F</singleColumn>
       <fields position="MIDDLE">
         <field>
-          <id>[scriptid=customrecord_sl_reportrunnerconfig.custrecord_slrrc_availableto]</id>
+          <id>[scriptid=customrecord_sl_reporthubconfig.custrecord_slrhc_availableto]</id>
           <label>Available To</label>
           <visible>T</visible>
           <mandatory>F</mandatory>
@@ -168,7 +168,7 @@
           <quickAdd>F</quickAdd>
         </field>
         <field>
-          <id>[scriptid=customrecord_sl_reportrunnerconfig.custrecord_slrrc_availabletoall]</id>
+          <id>[scriptid=customrecord_sl_reporthubconfig.custrecord_slrhc_availabletoall]</id>
           <label>Available To All</label>
           <visible>T</visible>
           <mandatory>F</mandatory>
@@ -193,7 +193,7 @@
   </mainFields>
   <tabs>
     <tab>
-      <id>[scriptid=customrecord_sl_reportrunnerconfig._slrr_filtersandoptions]</id>
+      <id>[scriptid=customrecord_sl_reporthubconfig._slrr_filtersandoptions]</id>
       <label>Filters and Options</label>
       <visible>T</visible>
       <fieldGroups>
@@ -201,8 +201,8 @@
       </fieldGroups>
       <subItems>
         <subList>
-          <id>[scriptid=customrecord_slrr_columns.custrecord_slrrc_configlink]</id>
-          <label>Report Hub Columns</label>
+          <id>[scriptid=customrecord_slrh_columns.custrecord_slrhc_configlink]</id>
+          <label>Report Runner Columns</label>
           <visible>T</visible>
           <neverEmpty>F</neverEmpty>
         </subList>

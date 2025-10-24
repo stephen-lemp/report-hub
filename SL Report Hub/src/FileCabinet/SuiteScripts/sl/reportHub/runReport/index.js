@@ -1,5 +1,5 @@
 
-const BASE_URL = `/app/site/hosting/scriptlet.nl?script=customscript_slreportrunner&deploy=customdeploy_slreportrunner`;
+const BASE_URL = `/app/site/hosting/scriptlet.nl?script=customscript_slreporthub&deploy=customdeploy_slreporthub`;
 
 let resultsTable = null;
 let currentReportId = null;
