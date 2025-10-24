@@ -373,7 +373,7 @@ function parseCustomColumnDefinitions(columns) {
       title: col.title,
     };
 
-    if (col.type === 'number') {
+    if (col.type === 'number' && col.allowfiltering === 'T') {
       updatedDefinition.headerFilter = CustomColumnFilterDefinitions.number.filterEditor;
       updatedDefinition.headerFilterFunc = CustomColumnFilterDefinitions.number.filterFunction;
       updatedDefinition.headerFilterLiveFilter = false;
