@@ -31,10 +31,11 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
           return;
         }
       } else {
-        const reportId = context.request.parameters.reportId;
+        const reportId = context.request.parameters.reportId || runtime.getCurrentScript().getParameter('custscript_slrr_suitelet_reportconfig');
+        log.debug('onRequest reportid', reportId);
         log.debug({ title: 'GET Request', details: context.request });
         if (reportId) { generateReportDisplay(context, reportId); }
-        else { generateMainPage(context); }
+        else { generateReportListing(context); }
       }
     } catch (e) {
       log.error({ title: 'Error in Report Runner Suitelet', details: e });
@@ -189,15 +190,15 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
   }
 
 
-  function generateMainPage(context) {
-    const form = serverWidget.createForm();
+  function generateReportListing(context) {
+    const form = serverWidget.createForm({ title: 'Report Runner' });
     ui.setupReportListingPage(form);
     context.response.writePage(form);
   }
 
 
   function generateReportDisplay(context, reportId) {
-    const form = serverWidget.createForm();
+    const form = serverWidget.createForm({ title: 'Report Runner' });
     ui.setupReportDisplayPage(form, reportId);
     context.response.writePage(form);
   }
