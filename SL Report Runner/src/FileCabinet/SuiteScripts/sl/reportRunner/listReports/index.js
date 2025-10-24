@@ -1,7 +1,7 @@
 const BASE_URL = `/app/site/hosting/scriptlet.nl?script=customscript_slreportrunner&deploy=customdeploy_slreportrunner`;
 let portletApi = null;
 let portletResizePending = false;
-const PORTLET_MIN_HEIGHT = 420;
+const PORTLET_MIN_HEIGHT = 120;
 const PORTLET_PADDING = 24;
 
 jQuery(document).ready(function () {
@@ -37,8 +37,11 @@ function schedulePortletResize() {
   window.requestAnimationFrame(() => {
     portletResizePending = false;
     try {
-      const height = Math.max(document.body.scrollHeight + PORTLET_PADDING, PORTLET_MIN_HEIGHT);
+      const card = document.getElementById('slrr-list-card');
+      const measuredHeight = card ? Math.ceil(card.getBoundingClientRect().height) : document.body.scrollHeight;
+      const height = Math.max(measuredHeight + PORTLET_PADDING, PORTLET_MIN_HEIGHT);
       portletApi.resize({ height });
+      console.log('resized portlet', height);
     } catch (error) {
       console.debug('portlet.resize failed', error);
     }
