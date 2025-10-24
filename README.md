@@ -1,6 +1,6 @@
-# Report Runner
+# Report Hub
 
-Report Runner is a SuiteCloud Development Framework (SDF) project that delivers a configurable Suitelet for running and visualising NetSuite reports. Each report is defined by a custom record that allows you to wire up Saved Searches or SuiteQL, configure filters, and export results.
+Report Hub is a SuiteCloud Development Framework (SDF) project that delivers a configurable Suitelet for running and visualising NetSuite reports. Each report is defined by a custom record that allows you to wire up Saved Searches or SuiteQL, configure filters, and export results.
 
 ## Features
 
@@ -12,15 +12,15 @@ Report Runner is a SuiteCloud Development Framework (SDF) project that delivers 
 
 ## Project Structure
 
-- **Report Runner - Main** - Suitelet deployment added under Lists > Search to allow users to find list of reports published to their role.
-- **Report Runner Config** - Custom Record to configure and publish reports.
-- **Report Runner Column** - Custom Record to specify column information such as formatting and filtering.
+- **Report Hub - Main** - Suitelet deployment added under Lists > Search to allow users to find list of reports published to their role.
+- **Report Hub Config** - Custom Record to configure and publish reports.
+- **Report Hub Column** - Custom Record to specify column information such as formatting and filtering.
 
 ## Getting Started
 
 1. **Install the project** – Deploy the SDF project to your target NetSuite account using SDF CLI or Web IDE.
 2. **Deploy the Suitelet** – The included deployment is enabled by default. Adjust roles and audience as needed in NetSuite.
-3. **Create report configurations** – Navigate to *Report Runner Configurations* and create a record for each report.
+3. **Create report configurations** – Navigate to *Report Hub Configurations* and create a record for each report.
 4. **Open the Suitelet** – Launch the Suitelet without parameters to see all available reports, or pass `report={internalId}` in the URL to jump straight to a configuration.
 
 ## Configuring Reports
@@ -36,9 +36,9 @@ Each report record supports the following key fields:
 | **Available To**     | List of roles that this report is published to.                                                                                                                                              |
 | **Available To All** | Checkbox indicating all roles have access to this report                                                                                                                                     |
 
-### Report Runner Columns
+### Report Hub Columns
 
-*Report Runner Columns* allow you to override certain things about a report column.
+*Report Hub Columns* allow you to override certain things about a report column.
 
 | Field                        | Purpose                                                                       |
 | ---------------------------- | ----------------------------------------------------------------------------- |
@@ -78,9 +78,8 @@ The Suitelet renders a **Download CSV** button that submits the form with the cu
 
 ## Upcoming Features
 
-Checkout the list of planned enhancements and bug fixes in the [GitHub Issue Tracker](https://github.com/stephen-lemp/report-runner/issues?q=is%3Aissue%20state%3Aopen%20label%3Aplanned)
+Checkout the list of planned enhancements and bug fixes in the [GitHub Issue Tracker](https://github.com/stephen-lemp/report-hub/issues?q=is%3Aissue%20state%3Aopen%20label%3Aplanned)
 
 ## Support
 
 Create issues or pull requests in this repository if you discover bugs or have enhancement ideas.
-

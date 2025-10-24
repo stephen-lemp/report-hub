@@ -1,5 +1,5 @@
 <manifest projecttype="ACCOUNTCUSTOMIZATION">
-  <projectname>SL Report Runner</projectname>
+  <projectname>SL Report Hub</projectname>
   <frameworkversion>1.0</frameworkversion>
   <dependencies>
     <features>

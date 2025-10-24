@@ -10,7 +10,7 @@
   <allowquicksearch>F</allowquicksearch>
   <allowuiaccess>T</allowuiaccess>
   <customsegment></customsegment>
-  <description>Configuration of a report that should be available on the Report Runner page.</description>
+  <description>Configuration of a report that should be available on the Report Hub page.</description>
   <enabledle>T</enabledle>
   <enablekeywords>T</enablekeywords>
   <enablemailmerge>F</enablemailmerge>
@@ -32,7 +32,7 @@
   <numberingprefix></numberingprefix>
   <numberingsuffix></numberingsuffix>
   <publicpermissionlevel>NONE</publicpermissionlevel>
-  <recordname>Report Runner Config</recordname>
+  <recordname>Report Hub Config</recordname>
   <showcreationdate>F</showcreationdate>
   <showcreationdateonlist>F</showcreationdateonlist>
   <showid>F</showid>
@@ -367,7 +367,7 @@
   <links>
     <link>
       <linkcategory>BASICSETUPCUSTOM</linkcategory>
-      <linklabel>Report Runner Configurations</linklabel>
+      <linklabel>Report Hub Configurations</linklabel>
       <linktasktype>LIST</linktasktype>
     </link>
   </links>

@@ -1,0 +1,5 @@
+{
+  "name": "sl-report-hub",
+  "version": "0.1.0",
+  "description": "SuiteCloud Report Hub project. Publish any SuiteQL Query or Saved Search with ease. Utilize header filters and various performance enhancements to make the experience super smooth for end users."
+}

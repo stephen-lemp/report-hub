@@ -1,5 +1,5 @@
 <entryForm scriptid="custform_sl_reportrunnerconfig" standard="STANDARDCUSTOMRECORD_SL_REPORTRUNNERCONFIGFORM">
-  <name>SL Report Runner Config Form</name>
+  <name>SL Report Hub Config Form</name>
   <recordType>[scriptid=customrecord_sl_reportrunnerconfig]</recordType>
   <inactive>F</inactive>
   <preferred>T</preferred>
@@ -202,7 +202,7 @@
       <subItems>
         <subList>
           <id>[scriptid=customrecord_slrr_columns.custrecord_slrrc_configlink]</id>
-          <label>Report Runner Columns</label>
+          <label>Report Hub Columns</label>
           <visible>T</visible>
           <neverEmpty>F</neverEmpty>
         </subList>

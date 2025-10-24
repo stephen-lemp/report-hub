@@ -32,7 +32,7 @@
   <numberingprefix></numberingprefix>
   <numberingsuffix></numberingsuffix>
   <publicpermissionlevel>NONE</publicpermissionlevel>
-  <recordname>Report Runner Columns</recordname>
+  <recordname>Report Hub Columns</recordname>
   <showcreationdate>F</showcreationdate>
   <showcreationdateonlist>F</showcreationdateonlist>
   <showid>F</showid>
@@ -51,7 +51,7 @@
       <defaultchecked>F</defaultchecked>
       <defaultselection></defaultselection>
       <defaultvalue></defaultvalue>
-      <description>Link to the Report Runner Config record associated with this filter.</description>
+      <description>Link to the Report Hub Config record associated with this filter.</description>
       <displayheight></displayheight>
       <displaytype>NORMAL</displaytype>
       <displaywidth></displaywidth>
@@ -60,7 +60,7 @@
       <encryptatrest>F</encryptatrest>
       <fieldtype>SELECT</fieldtype>
       <globalsearch>F</globalsearch>
-      <help>Link to the Report Runner Config record associated with this filter.</help>
+      <help>Link to the Report Hub Config record associated with this filter.</help>
       <isformula>F</isformula>
       <ismandatory>F</ismandatory>
       <isparent>T</isparent>

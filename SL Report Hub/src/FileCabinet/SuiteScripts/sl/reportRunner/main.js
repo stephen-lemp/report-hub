@@ -2,7 +2,7 @@
  * @NApiVersion 2.1
  * @NScriptType Suitelet
  * @author Stephen Lemp <sl@stephenlemp.com>
- * @description Main entry point for the Report Runner Suitelet
+ * @description Main entry point for the Report Hub Suitelet
  */
 define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/task', 'N/runtime', './uiLibrary'], function (serverWidget, search, config, file, query, task, runtime, ui) {
 
@@ -38,7 +38,7 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
         else { generateReportListing(context); }
       }
     } catch (e) {
-      log.error({ title: 'Error in Report Runner Suitelet', details: e });
+      log.error({ title: 'Error in Report Hub Suitelet', details: e });
       context.response.write('An error occurred: ' + e.message);
     }
   }
@@ -191,14 +191,14 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
 
 
   function generateReportListing(context) {
-    const form = serverWidget.createForm({ title: 'Report Runner' });
+    const form = serverWidget.createForm({ title: 'Report Hub' });
     ui.setupReportListingPage(form);
     context.response.writePage(form);
   }
 
 
   function generateReportDisplay(context, reportId) {
-    const form = serverWidget.createForm({ title: 'Report Runner' });
+    const form = serverWidget.createForm({ title: 'Report Hub' });
     ui.setupReportDisplayPage(form, reportId);
     context.response.writePage(form);
   }
