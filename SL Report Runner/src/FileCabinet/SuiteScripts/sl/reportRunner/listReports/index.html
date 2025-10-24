@@ -59,17 +59,25 @@
     }
 
     .toolbar {
-      display: flex;
+      display: grid;
       gap: 8px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       align-items: center;
       margin-bottom: 10px;
     }
 
     .toolbar input {
-      flex: 1;
+      grid-column: span 2;
       padding: 8px 10px;
       border: 1px solid var(--border);
       border-radius: 12px;
+    }
+
+    .toolbar-buttons {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      grid-column: span 1;
     }
 
     .toolbar button {
@@ -78,10 +86,30 @@
       padding: 8px 10px;
       border-radius: 12px;
       cursor: pointer;
+      width: 100%;
     }
 
     .toolbar button:hover {
       background: var(--hover);
+    }
+
+    @media (max-width: 640px) {
+      .toolbar {
+        grid-template-columns: 1fr;
+      }
+
+      .toolbar input {
+        grid-column: span 1;
+      }
+
+      .toolbar-buttons {
+        grid-column: span 1;
+        justify-content: flex-start;
+      }
+
+      .toolbar button {
+        width: auto;
+      }
     }
 
     .tree {
@@ -178,6 +206,13 @@
       color: var(--muted);
       font-size: 12px;
       margin-left: auto;
+      display: none;
+    }
+
+    @media (min-width: 768px) {
+      .path {
+        display: inline;
+      }
     }
 
     .visually-hidden {
@@ -195,11 +230,13 @@
 </head>
 
 <body>
-  <div class="card">
+  <div id="slrr-list-card" class="card">
     <div class="toolbar">
       <input id="search" placeholder="Search reports or categories…" aria-label="Search" />
-      <button id="expandAll" type="button">Expand all</button>
-      <button id="collapseAll" type="button">Collapse all</button>
+      <div class="toolbar-buttons">
+        <button id="expandAll" type="button">Expand all</button>
+        <button id="collapseAll" type="button">Collapse all</button>
+      </div>
     </div>
     <div id="tree" class="tree" role="tree" aria-label="Report links"></div>
     <div class="muted" style="margin-top:8px;">Tip: ← collapses, → expands, Enter opens a link.</div>

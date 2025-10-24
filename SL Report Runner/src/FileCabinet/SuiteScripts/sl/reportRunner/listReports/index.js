@@ -1,12 +1,54 @@
+const BASE_URL = `/app/site/hosting/scriptlet.nl?script=customscript_slreportrunner&deploy=customdeploy_slreportrunner`;
+let portletApi = null;
+let portletResizePending = false;
+const PORTLET_MIN_HEIGHT = 120;
+const PORTLET_PADDING = 24;
 
 jQuery(document).ready(function () {
   require(['N/query', 'N/runtime', 'N/currentRecord'], (query, runtime, currentRecord) => {
     window.cr = currentRecord.get();
     window.query = query;
     window.runtime = runtime;
+    requestPortletModule();
     setupPage();
   });
 });
+
+function requestPortletModule() {
+  if (typeof require !== 'function') {
+    return;
+  }
+  require(['N/portlet'], function (portlet) {
+    portletApi = portlet;
+    schedulePortletResize();
+  }, function (error) {
+    console.debug('N/portlet module unavailable', error);
+  });
+}
+function schedulePortletResize() {
+  if (!portletApi || portletResizePending) return;
+
+  portletResizePending = true;
+  window.requestAnimationFrame(() => {
+    portletResizePending = false;
+    try {
+      const card = document.getElementById('slrr-list-card');
+      const measuredHeight = card ? Math.ceil(card.getBoundingClientRect().height) : document.body.scrollHeight;
+      const height = Math.max(measuredHeight + PORTLET_PADDING, PORTLET_MIN_HEIGHT);
+
+      const frame = window.frameElement;
+      if (frame && frame.style) {
+        frame.style.minHeight = `${PORTLET_MIN_HEIGHT}px`; // reset the clamp
+        frame.style.height = `${height}px`;
+      }
+
+      portletApi.resize({ height });
+      console.log('resized portlet', height);
+    } catch (error) {
+      console.debug('portlet.resize failed', error);
+    }
+  });
+}
 
 
 function getReportDefinitions() {
@@ -225,6 +267,7 @@ function setupPage() {
     headerEl.setAttribute("aria-expanded", String(isOpen));
     childrenBlock.classList.toggle("open", isOpen);
     twistyEl.textContent = iconChevron(isOpen);
+    schedulePortletResize();
   }
 
   function clearTree() {
@@ -236,6 +279,7 @@ function setupPage() {
     for (const [, child] of rootLike.children) {
       treeEl.appendChild(makeFolderNode(child));
     }
+    schedulePortletResize();
   }
 
   function filterTree(node, query) {
@@ -283,6 +327,7 @@ function setupPage() {
       for (const k of allFolderKeys(currentFiltered)) expanded.add(k);
     }
     render(currentFiltered);
+    schedulePortletResize();
   });
 
   expandAllBtn.addEventListener("click", () => {
@@ -290,11 +335,13 @@ function setupPage() {
     const src = currentFiltered || root;
     for (const k of allFolderKeys(src)) expanded.add(k);
     render(src);
+    schedulePortletResize();
   });
 
   collapseAllBtn.addEventListener("click", () => {
     expanded.clear();
     render(currentFiltered || root);
+    schedulePortletResize();
   });
 
   // Initial render
@@ -303,6 +350,7 @@ function setupPage() {
     expanded.add(child.path.join("/"));
   }
   render(root);
+  schedulePortletResize();
 
   async function initiateReportDownload(item, row, linkEl) {
     if (row.dataset.downloading === "true") {
@@ -346,6 +394,7 @@ function setupPage() {
       linkEl.setAttribute("href", originalHref);
       linkEl.removeAttribute("aria-disabled");
       linkEl.removeAttribute("tabindex");
+      schedulePortletResize();
     }
   }
 }
@@ -465,19 +514,20 @@ function sanitizeFileName(name) {
   return cleaned || "report";
 }
 
+
 function getUrl(parameters = {}) {
   const currentUrl = new URL(window.location.href);
-  const newUrl = new URL(currentUrl.origin + currentUrl.pathname);
+
+  const newUrl = new URL(currentUrl.origin + BASE_URL);
+
   const params = currentUrl.searchParams;
-  ["script", "deploy"].forEach((key) => {
+  ['script', 'deploy'].forEach(key => {
     const value = params.get(key);
     if (value) newUrl.searchParams.set(key, value);
   });
-  Object.keys(parameters || {}).forEach((param) => {
-    if (parameters[param] !== undefined && parameters[param] !== null) {
-      newUrl.searchParams.set(param, parameters[param]);
-    }
-  });
+  for (const param in parameters) {
+    newUrl.searchParams.set(param, parameters[param]);
+  }
   return newUrl.toString();
 }
 

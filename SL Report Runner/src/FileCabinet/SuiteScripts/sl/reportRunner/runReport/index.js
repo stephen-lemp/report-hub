@@ -55,7 +55,9 @@ function setResultsTitle(text) {
   if (titleElement) {
     titleElement.textContent = text;
   }
-  schedulePortletResize();
+  resultsTable.on('tableBuilt', () => {
+    schedulePortletResize();
+  });
 }
 
 const CustomColumnFilterDefinitions = {
@@ -66,14 +68,10 @@ const CustomColumnFilterDefinitions = {
       //create and style inputs
       var start = document.createElement("input");
       start.setAttribute("type", "date");
-      start.setAttribute("placeholder", "Min");
       start.style.padding = "4px";
       start.style.width = "50%";
       start.style.boxSizing = "border-box";
-
       start.value = cell.getValue();
-
-
       end = start.cloneNode();
 
       start.addEventListener("change", buildValues);
@@ -98,9 +96,9 @@ const CustomColumnFilterDefinitions = {
       }
 
       function keypress(e) {
-        if (e.keyCode == 13) {
-          buildValues();
-        }
+        //if (e.keyCode == 13) {
+        //  buildValues();
+        //}
 
         if (e.keyCode == 27) {
           cancel();
@@ -126,6 +124,68 @@ const CustomColumnFilterDefinitions = {
         } else {
           if (filterEndTime) {
             return rowTimeValue <= filterEndTime;
+          }
+        }
+      }
+
+      return true; //must return a boolean, true if it passes the filter.
+    }
+  },
+  number: {
+    filterEditor: function (cell, onRendered, success, cancel, editorParams) {
+      var end;
+      var container = document.createElement("span");
+
+      //create and style inputs
+      var start = document.createElement("input");
+      start.setAttribute("type", "number");
+      start.style.padding = "4px";
+      start.style.width = "50%";
+      start.style.boxSizing = "border-box";
+      start.value = cell.getValue();
+
+
+      function buildValues() {
+        console.log('buildValues - number', { start: start.value, end: end.value });
+        success({
+          start: start.value,
+          end: end.value,
+        });
+      }
+
+      function keypress(e) {
+        if (e.keyCode == 13) { buildValues(); }
+        if (e.keyCode == 27) { cancel(); }
+      }
+
+      end = start.cloneNode();
+
+      start.addEventListener("change", buildValues);
+      start.addEventListener("blur", buildValues);
+      start.addEventListener("keydown", keypress);
+      end.addEventListener("change", buildValues);
+      end.addEventListener("blur", buildValues);
+      end.addEventListener("keydown", keypress);
+
+      container.appendChild(start);
+      container.appendChild(end);
+
+      return container;
+    },
+    filterFunction: (headerValue, rowValue, rowData, filterParams) => {
+      const value = rowValue ? Number(rowValue) : rowValue;
+      const startValue = headerValue.start ? Number(headerValue.start) : headerValue.start;
+      const endValue = headerValue.end ? Number(headerValue.end) : headerValue.end;
+      if (value != "") {
+        if (startValue != "") {
+          if (endValue != "") {
+            return value >= startValue && value <= endValue;
+          } else {
+            return value >= startValue;
+          }
+        } else {
+          if (endValue != "") {
+            return value <= endValue;
           }
         }
       }
@@ -220,7 +280,6 @@ async function setupDocumentReady() {
       paginationSize: 25,
       paginationSizeSelector: [10, 25, 50, 100, true],
       paginationCounter: 'rows', //add pagination row counter
-      headerFilterLiveFilterDelay: 600, //wait 600ms from last keystroke before triggering filter
       dataLoader: true, // Show loader while fetching data
       ajaxURL: getUrl({ action: 'GET_REPORT_DATA', reportId: currentReportId, requestGuid }),
       ajaxConfig: 'POST',
@@ -229,6 +288,11 @@ async function setupDocumentReady() {
       }
     }
   );
+
+  resultsTable.on('tableBuilt', () => {
+    schedulePortletResize();
+  });
+  schedulePortletResize();
 }
 
 function parseCustomColumnDefinitions(columns) {
@@ -241,12 +305,17 @@ function parseCustomColumnDefinitions(columns) {
       title: col.title,
     };
 
-    if (col.type == 'date') {
+    if (col.type === 'number') {
+      updatedDefinition.headerFilter = CustomColumnFilterDefinitions.number.filterEditor;
+      updatedDefinition.headerFilterFunc = CustomColumnFilterDefinitions.number.filterFunction;
+      updatedDefinition.headerFilterLiveFilter = false;
+    } else if (col.type == 'date') {
       updatedDefinition.sorter = 'date';
       updatedDefinition.sorterParams = { format: convertDateFormat(userFormattingOptions.dateFormat, 'LUX') };
       if (col.allowfiltering === 'T') {
         updatedDefinition.headerFilter = CustomColumnFilterDefinitions.date.filterEditor;
         updatedDefinition.headerFilterFunc = CustomColumnFilterDefinitions.date.filterFunction;
+        updatedDefinition.headerFilterLiveFilter = false;
         updatedDefinition.width = '15px';
       }
     } else if (col.type === 'select' && col.allowfiltering === 'T') {
