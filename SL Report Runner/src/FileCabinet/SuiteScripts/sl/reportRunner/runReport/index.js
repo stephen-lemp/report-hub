@@ -141,6 +141,21 @@ const CustomColumnFilterDefinitions = {
       start.style.width = "50%";
       start.style.boxSizing = "border-box";
       start.value = cell.getValue();
+
+
+      function buildValues() {
+        console.log('buildValues - number', { start: start.value, end: end.value });
+        success({
+          start: start.value,
+          end: end.value,
+        });
+      }
+
+      function keypress(e) {
+        if (e.keyCode == 13) { buildValues(); }
+        if (e.keyCode == 27) { cancel(); }
+      }
+
       end = start.cloneNode();
 
       start.addEventListener("change", buildValues);
@@ -153,18 +168,6 @@ const CustomColumnFilterDefinitions = {
       container.appendChild(start);
       container.appendChild(end);
 
-      function buildValues() {
-        console.log('buildValues - number', { start: start.value, end: end.value });
-        success({
-          start: start.value,
-          end: end.value,
-        });
-      }
-
-      function keypress(e) {
-        //if (e.keyCode == 13) { buildValues(); }
-        if (e.keyCode == 27) { cancel(); }
-      }
       return container;
     },
     filterFunction: (headerValue, rowValue, rowData, filterParams) => {
@@ -298,12 +301,14 @@ function parseCustomColumnDefinitions(columns) {
     if (col.type === 'number') {
       updatedDefinition.headerFilter = CustomColumnFilterDefinitions.number.filterEditor;
       updatedDefinition.headerFilterFunc = CustomColumnFilterDefinitions.number.filterFunction;
+      updatedDefinition.headerFilterLiveFilter = false;
     } else if (col.type == 'date') {
       updatedDefinition.sorter = 'date';
       updatedDefinition.sorterParams = { format: convertDateFormat(userFormattingOptions.dateFormat, 'LUX') };
       if (col.allowfiltering === 'T') {
         updatedDefinition.headerFilter = CustomColumnFilterDefinitions.date.filterEditor;
         updatedDefinition.headerFilterFunc = CustomColumnFilterDefinitions.date.filterFunction;
+        updatedDefinition.headerFilterLiveFilter = false;
         updatedDefinition.width = '15px';
       }
     } else if (col.type === 'select' && col.allowfiltering === 'T') {
