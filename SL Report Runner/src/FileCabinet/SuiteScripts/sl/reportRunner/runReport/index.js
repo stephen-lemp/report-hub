@@ -5,7 +5,7 @@ let resultsTable = null;
 let currentReportId = null;
 let portletApi = null;
 let portletResizePending = false;
-const PORTLET_MIN_HEIGHT = 420;
+const PORTLET_MIN_HEIGHT = 120;
 const PORTLET_PADDING = 24;
 let resultsTableResizeHooked = false;
 let lastPollElapsed = null;
@@ -35,18 +35,27 @@ function requestPortletModule() {
 }
 
 function schedulePortletResize() {
-  if (!portletApi) {
+  if (!portletApi || portletResizePending) {
     return;
   }
-  if (portletResizePending) {
-    return;
-  }
+
   portletResizePending = true;
   window.requestAnimationFrame(() => {
     portletResizePending = false;
     try {
-      const height = Math.max(document.body.scrollHeight + PORTLET_PADDING, PORTLET_MIN_HEIGHT);
-      if (portletApi) portletApi.resize({ height });
+      const mainForm = document.getElementById('main_form');
+      const mainFormHeight = mainForm ? Math.ceil(mainForm.getBoundingClientRect().height) : null;
+      const measuredHeight = mainFormHeight !== null ? mainFormHeight : Math.ceil(document.body.scrollHeight);
+      const height = Math.max(measuredHeight + PORTLET_PADDING, PORTLET_MIN_HEIGHT);
+
+      const frame = window.frameElement;
+      if (frame && frame.style) {
+        frame.style.minHeight = `${PORTLET_MIN_HEIGHT}px`;
+        frame.style.height = `${height}px`;
+      }
+
+      portletApi.resize({ height });
+      console.log('runReport.resize', { mainFormHeight, fallbackBodyHeight: document.body.scrollHeight, measuredHeight, height });
     } catch (error) {
       //console.warn('portlet.resize failed', error);
     }
@@ -337,11 +346,18 @@ async function setupDocumentReady() {
     schedulePortletResize();
   });
   resultsTable.on('renderComplete', () => {
+    schedulePortletResize();
     if (pendingTableCompletion) {
       pendingTableCompletion = false;
       const elapsed = lastPollElapsed || '0.0s';
       setResultsTitle(`✅ Done (${elapsed})`);
     }
+  });
+  resultsTable.on('dataProcessed', () => {
+    schedulePortletResize();
+  });
+  resultsTable.on('dataFiltered', () => {
+    schedulePortletResize();
   });
   schedulePortletResize();
 }
