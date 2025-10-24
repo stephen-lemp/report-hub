@@ -1,3 +1,4 @@
+const BASE_URL = `/app/site/hosting/scriptlet.nl?script=customscript_slreportrunner&deploy=customdeploy_slreportrunner`;
 let portletApi = null;
 let portletResizePending = false;
 const PORTLET_MIN_HEIGHT = 420;
@@ -507,19 +508,20 @@ function sanitizeFileName(name) {
   return cleaned || "report";
 }
 
+
 function getUrl(parameters = {}) {
   const currentUrl = new URL(window.location.href);
-  const newUrl = new URL(currentUrl.origin + currentUrl.pathname);
+
+  const newUrl = new URL(currentUrl.origin + BASE_URL);
+
   const params = currentUrl.searchParams;
-  ["script", "deploy"].forEach((key) => {
+  ['script', 'deploy'].forEach(key => {
     const value = params.get(key);
     if (value) newUrl.searchParams.set(key, value);
   });
-  Object.keys(parameters || {}).forEach((param) => {
-    if (parameters[param] !== undefined && parameters[param] !== null) {
-      newUrl.searchParams.set(param, parameters[param]);
-    }
-  });
+  for (const param in parameters) {
+    newUrl.searchParams.set(param, parameters[param]);
+  }
   return newUrl.toString();
 }
 
