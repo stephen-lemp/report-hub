@@ -20,7 +20,7 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
     GET_REPORT_COLUMNS: (context) => {
       const reportId = context.request.parameters.reportId;
       context.response.setHeader({ name: 'Content-Type', value: 'application/json' });
-      context.response.write(getReportColumnDefinitionsById(reportId) || '[]');
+      context.response.write(JSON.stringify(getReportColumnDefinitionsById(reportId)) || '[]');
     }
   };
 
@@ -50,28 +50,12 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
 
   function getReportColumnDefinitionsById(reportId) {
     log.debug({ title: 'getReportColumnDefinitionsById', details: `Report ID: ${reportId}` });
-    const results = [];
-    query.runSuiteQL({
-      query: `SELECT  custrecord_slrrc_id field,  custrecord_slrrc_title title,  custrecord_slrrc_headerfilter headerfilter,  custrecord_slrrc_headerfilterparams headerfilterparams, custrecord_slrrc_formatter formatter, custrecord_slrrc_formatterparams formatterparams, custrecord_slrrc_sorter sorter, 	custrecord_slrrc_sorterparams sorterparams
+    return query.runSuiteQL({
+      query: `SELECT  custrecord_slrrc_id field,  custrecord_slrrc_title title, custrecord_slrrc_type editor_select, custrecord_slrrc_allowfiltering filtering_options
               FROM customrecord_slrr_columns 
               WHERE custrecord_slrrc_configlink = ?`,
       params: [reportId]
-    }).asMappedResults().forEach(result => {
-      results.push(
-        {
-          field: result.field,
-          title: result.title,
-          headerFilter: result.headerfilter,
-          headerFilterParams: result.headerfilterparams ? JSON.parse(result.headerfilterparams) : undefined,
-          formatter: result.formatter,
-          formatterParams: result.formatterparams ? JSON.parse(result.formatterparams) : null,
-          sorter: result.sorter,
-          sorterParams: result.sorterparams ? JSON.parse(result.sorterparams) : null,
-        });
-      return result.custrecord_slrr_column_definitions || '[]';
-    });
-    log.debug('getReportColumnDefinitionsById() results', results);
-    return JSON.stringify(results);
+    }).asMappedResults() || [];
   }
 
 
@@ -246,6 +230,7 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
       columns: ['name']
     });
 
+
     const form = serverWidget.createForm({ title: reportOptions.name, hideNavBar: false });
     // add html with reference script/css links
     const style = `<style>${file.load({ id: '/SuiteScripts/sl/reportRunner/runReport/index.css' }).getContents()}</style>`;
@@ -266,6 +251,13 @@ define(['N/ui/serverWidget', 'N/search', 'N/config', 'N/file', 'N/query', 'N/tas
       .updateDisplayType({ displayType: serverWidget.FieldDisplayType.HIDDEN })
       .defaultValue = reportId;
 
+    form.addField({
+      id: 'cuatpage_columndefinitions',
+      type: serverWidget.FieldType.LONGTEXT,
+      label: 'Columns'
+    })
+      .updateDisplayType({ displayType: serverWidget.FieldDisplayType.HIDDEN })
+      .defaultValue = JSON.stringify(getReportColumnDefinitionsById(reportId));
     context.response.writePage(form);
   }
 

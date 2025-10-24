@@ -206,54 +206,27 @@ function getDataFromLink(dataLink, requestGuid) {
 
 async function setupDocumentReady() {
   currentReportId = cr.getValue('custpage_reportid');
-  console.log('reportId', currentReportId);
+  const columns = JSON.parse(cr.getValue('cuatpage_columndefinitions'));
+  console.log('setupDocumentReady', { currentReportId, columns });
   const requestGuid = `${runtime.getCurrentUser().id}-${new Date().getTime()}-${currentReportId}`;
 
   resultsTable = new Tabulator(
     `#results-table`,
     {
+      columns,
       pagination: true,
       paginationSize: 25,
       paginationSizeSelector: [10, 25, 50, 100, true],
-      headerFilterLiveFilterDelay: 600, //wait 600ms from last keystroke before triggering filter
-      autoColumns: 'full',
       paginationCounter: 'rows', //add pagination row counter
+      headerFilterLiveFilterDelay: 600, //wait 600ms from last keystroke before triggering filter
       dataLoader: true, // Show loader while fetching data
       ajaxURL: getUrl({ action: 'GET_REPORT_DATA', reportId: currentReportId, requestGuid }),
       ajaxConfig: 'POST',
       ajaxRequestFunc: function (url, config, params) {
-        return pollForData(url, params, 2000, 300); // resolves with []
+        return pollForData(url, params, 1000, 300); // resolves with []
       }
     }
   );
-
-  resultsTable.on('dataLoaded', function (data) {
-    // update columns once data is loaded
-    console.log('CustomHeaderFilters:', CustomHeaderFilters);
-    getCustomColumnDefinitions(resultsTable.getColumnDefinitions()).then((customDefinitions) => {
-      if (customDefinitions && customDefinitions.length > 0) {
-        const mergedDefinitions = resultsTable.getColumnDefinitions().map((defaultCol) => {
-          const customCol = customDefinitions.find(col => col.field === defaultCol.field);
-          if (customCol) {
-            // Apply header filter options
-            if (customCol.headerFilter && CustomHeaderFilters[customCol.headerFilter]) {
-              const headerFilterKey = customCol.headerFilter;
-              customCol.headerFilter = CustomHeaderFilters[headerFilterKey].editor;
-              customCol.headerFilterFunc = CustomHeaderFilters[headerFilterKey].filterFunction;
-              customCol.headerFilterLiveFilter = false;
-            }
-          }
-          return customCol ? { ...defaultCol, ...customCol } : defaultCol;
-        });
-        console.log('Merged Definitions:', mergedDefinitions);
-        resultsTable.setColumns(mergedDefinitions);
-      } else {
-        console.log('No custom definitions found, using default.');
-      }
-      schedulePortletResize();
-    });
-  });
-
 }
 
 function getCustomColumnDefinitions() {
