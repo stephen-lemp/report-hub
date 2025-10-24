@@ -10,7 +10,7 @@
       <feature required="false">MAILMERGE</feature>
       <feature required="true">CUSTOMRECORDS</feature>
       <feature required="false">MULTILANGUAGE</feature>
-      <feature required="true">SUBSCRIPTIONBILLING</feature>
+      <feature required="false">SUBSCRIPTIONBILLING</feature>
     </features>
     <objects>
     </objects>
