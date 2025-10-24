@@ -25,14 +25,9 @@ function requestPortletModule() {
     console.debug('N/portlet module unavailable', error);
   });
 }
-
 function schedulePortletResize() {
-  if (!portletApi) {
-    return;
-  }
-  if (portletResizePending) {
-    return;
-  }
+  if (!portletApi || portletResizePending) return;
+
   portletResizePending = true;
   window.requestAnimationFrame(() => {
     portletResizePending = false;
@@ -40,6 +35,13 @@ function schedulePortletResize() {
       const card = document.getElementById('slrr-list-card');
       const measuredHeight = card ? Math.ceil(card.getBoundingClientRect().height) : document.body.scrollHeight;
       const height = Math.max(measuredHeight + PORTLET_PADDING, PORTLET_MIN_HEIGHT);
+
+      const frame = window.frameElement;
+      if (frame && frame.style) {
+        frame.style.minHeight = `${PORTLET_MIN_HEIGHT}px`; // reset the clamp
+        frame.style.height = `${height}px`;
+      }
+
       portletApi.resize({ height });
       console.log('resized portlet', height);
     } catch (error) {
@@ -47,6 +49,7 @@ function schedulePortletResize() {
     }
   });
 }
+
 
 function getReportDefinitions() {
   return query.runSuiteQL({
