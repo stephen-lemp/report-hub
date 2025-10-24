@@ -138,7 +138,7 @@ const CustomColumnFilterDefinitions = {
 
       //create and style inputs
       var start = document.createElement("input");
-      start.setAttribute("type", "number");
+      //start.setAttribute("type", "number");
       start.style.padding = "4px";
       start.style.width = "50%";
       start.style.boxSizing = "border-box";
@@ -316,7 +316,7 @@ function parseCustomColumnDefinitions(columns) {
         updatedDefinition.headerFilter = CustomColumnFilterDefinitions.date.filterEditor;
         updatedDefinition.headerFilterFunc = CustomColumnFilterDefinitions.date.filterFunction;
         updatedDefinition.headerFilterLiveFilter = false;
-        updatedDefinition.width = '15px';
+        updatedDefinition.width = '20px';
       }
     } else if (col.type === 'select' && col.allowfiltering === 'T') {
       updatedDefinition.headerFilter = 'list';
