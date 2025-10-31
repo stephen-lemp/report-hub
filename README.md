@@ -20,8 +20,8 @@ Report Hub is a SuiteCloud Development Framework (SDF) project that delivers a c
 
 1. **Install the project** – Deploy the SDF project to your target NetSuite account using SDF CLI or Web IDE.
 2. **Deploy the Suitelet** – The included deployment is enabled by default. Adjust roles and audience as needed in NetSuite.
-3. **Create report configurations** – Navigate to *Report Hub Configurations* and create a record for each report.
-4. **Open the Suitelet** – Launch the Suitelet without parameters to see all available reports, or pass `report={internalId}` in the URL to jump straight to a configuration.
+3. **Create report configurations** – Navigate to *Setup > Custom > Report Hub Configurations* and create a record for each report.
+
 
 ## Configuring Reports
 
