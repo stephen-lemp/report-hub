@@ -38,19 +38,6 @@
     </scriptcustomfield>
   </scriptcustomfields>
   <scriptdeployments>
-    <scriptdeployment scriptid="customdeploy4">
-      <allemployees>F</allemployees>
-      <allpartners>F</allpartners>
-      <allroles>T</allroles>
-      <audslctrole></audslctrole>
-      <custscript_slrh_portlet_reportid>[scriptid=customrecord_sl_reporthubconfig.val_314152_t1379078_769]</custscript_slrh_portlet_reportid>
-      <dashboardapp>F</dashboardapp>
-      <isdeployed>T</isdeployed>
-      <loglevel>DEBUG</loglevel>
-      <runasrole></runasrole>
-      <status>TESTING</status>
-      <title>Column Filtering Demo</title>
-    </scriptdeployment>
     <scriptdeployment scriptid="customdeploy_slrhp_list">
       <allemployees>F</allemployees>
       <allpartners>F</allpartners>
@@ -64,18 +51,6 @@
       <status>RELEASED</status>
       <title>Report Hub List</title>
     </scriptdeployment>
-    <scriptdeployment scriptid="customdeploy1">
-      <allemployees>F</allemployees>
-      <allpartners>F</allpartners>
-      <allroles>T</allroles>
-      <audslctrole></audslctrole>
-      <custscript_slrh_portlet_reportid>[scriptid=customrecord_sl_reporthubconfig.val_314124_t1379078_176]</custscript_slrh_portlet_reportid>
-      <dashboardapp>F</dashboardapp>
-      <isdeployed>T</isdeployed>
-      <loglevel>DEBUG</loglevel>
-      <runasrole></runasrole>
-      <status>TESTING</status>
-      <title>Big Data</title>
-    </scriptdeployment>
+
   </scriptdeployments>
 </portlet>
